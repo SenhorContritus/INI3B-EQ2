@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tccApp",
-    "slug": "tccApp",
+    "name": "tcc",
+    "slug": "tcc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,10 +19,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.eduardo153467.tcc"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0e095b62-e014-4cfb-bae1-2130bdfbd3a1"
+      }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "inAndroidForegroundLocationEnabled": true
+        }
+      ]
+    ]
   }
 }
