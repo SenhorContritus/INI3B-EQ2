@@ -5,25 +5,24 @@ import * as Location from "expo-location";
 
 export default function App(){
 
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   useEffect(() =>{
-    (async() => {
-        let{status} = await Location.requestForegroundPermissionsAsync()
-        if(status == "granted"){
-          console.log("Permission granted");
-          const loc = await Location.getCurrentPositionAsync();
-          setLocation(loc);
-          return;
-          
-        }else{
-          console.log("Permission denied");
-          setLocation("deu ruim")
-          return;
-        }
-        
-    })
-  })
+    async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status == "granted") {
+        console.log("Permission granted");
+        const loc = await Location.getCurrentPositionAsync();
+        setLocation(loc);
+        return;
+
+      } else {
+        console.log("Permission denied");
+        return;
+      }
+
+    }
+  },[])
 
   return <View style={styles.container}>
       <Text>{JSON.stringify(location)}</Text>
