@@ -1,38 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View,Text } from "react-native";
-import * as Location from "expo-location";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Main from "./Pages/Main";
 
+const Stack = createNativeStackNavigator();
 
 export default function App(){
+  return <NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={Main}
+      />
 
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-
-  useEffect(() =>{
-    async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status == "granted") {
-        console.log("Permission granted");
-        const loc = await Location.getCurrentPositionAsync();
-        setLocation(loc);
-        return;
-
-      } else {
-        console.log("Permission denied");
-        return;
-      }
-
-    }
-  },[])
-
-  return <View style={styles.container}>
-      <Text>{JSON.stringify(location)}</Text>
-  </View>
+    </Stack.Navigator>
+  </NavigationContainer>
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
