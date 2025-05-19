@@ -5,12 +5,19 @@ import Main from "./Pages/Main";
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App(){
   return <NavigationContainer>
-    <Stack.Navigator>
+    
+    <Stack.Navigator
+      screenOptions={{
+        headerShown:false
+      }}
+    >
       <Stack.Screen
-        name="Home"
+        name=" "
         component={Main}
+        
       />
 
     </Stack.Navigator>

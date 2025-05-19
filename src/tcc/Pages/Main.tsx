@@ -39,7 +39,7 @@ export default function Main(){
     </View>
     <View style={styles.header}>
         <View>
-
+            
         </View>
         <View>
 
