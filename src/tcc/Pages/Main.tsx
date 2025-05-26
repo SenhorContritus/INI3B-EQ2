@@ -24,7 +24,7 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
 };
 
 
-export default function Main() {
+export default function Main({ navigation }: any) {
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [weather, setWeather] = useState<string>("");
@@ -78,9 +78,15 @@ export default function Main() {
     <View style={styles.body}>
       <View style={styles.top}>
         <View style={styles.nav}>
-          <Pressable style={styles.navPress}>
+            <Pressable
+            style={styles.navPress}
+            onPress={() => {
+              //usei o babiba para navegar
+              navigation.navigate("ConfigPessoal");
+            }}
+            >
             <Text style={styles.settingsIcon}>⚙️</Text>
-          </Pressable>
+            </Pressable>
         </View>
         <View style={styles.clockContainer}>
           <Text style={styles.clockText}>
