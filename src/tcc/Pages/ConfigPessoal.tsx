@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import React from 'react';
 import { Button, StyleSheet, Text, View, ScrollView, Switch } from 'react-native';
+
 export const ConfigPessoal = () => {
 
 
@@ -12,31 +13,27 @@ export const ConfigPessoal = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Configurações Gerais</Text>
-      <View style={styles.caixa1}>
-        
- 
- Tema
-<Switch
-          value={temaEscuro}
-          onValueChange={setTemaEscuro}
-          thumbColor={temaEscuro ? "#415A77" : "#E0E1DD"}
-          trackColor={{ false: "#ccc", true: "#0D1B2A" }}
-        />
-        Idioma
-
+    
+    <View style={temaEscuro ? escuro.container : claro.container}>
+      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Configurações Gerais</Text>
+      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+      Tema
+      <Switch
+        value={temaEscuro}
+        onValueChange={setTemaEscuro}
+        thumbColor={temaEscuro ? "#FFFFFF" : "#193358"}
+        trackColor={{ false: "#FFFFFF", true: "#000000" }}
+      />
+      Idioma
       </View>
-      <Text style={styles.titulo}>Localizacao</Text>
-      <View style={styles.caixa2}>
-        
- babiba
-        
+      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Localizacao</Text>
+      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+      Localização
       </View>
-      <Text style={styles.titulo}>Data e hora</Text>
-      <View style={styles.caixa3}>
+      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Data e hora</Text>
+      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
         
- babiba
+      Data e hora
         
       </View>
       <Button title="Salvar" onPress={handleSave} />
@@ -44,60 +41,76 @@ export const ConfigPessoal = () => {
   );
 }
 
-const styles = StyleSheet.create({
+
+const escuro = StyleSheet.create({
   container: {
+    backgroundColor: '#000000',
     flex: 1,
-    backgroundColor: '#0D1B2A',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    minHeight: '100%'
+    minHeight: '100%',
+    
   },
-  caixa1: {
+
+    
+  
+  caixa: {
     alignItems: 'center',
     fontWeight: 'bold',
-    color: '#E0E1DD',
-    backgroundColor: '#1B263B',
-    borderRadius: 10,
+    color: 'white',
+    backgroundColor: '#193358',
+    borderRadius: 20,
     padding: 20,
     width: '100%',
-    maxWidth: 500,
     elevation: 4,
-    minHeight: '20%',
+    height: 128,
     marginBottom: '5%',
+    fontFamily: 'Arial',
   },
-  caixa2: {
-    alignItems: 'center',
-    fontWeight: 'bold',
-    color: '#E0E1DD',
-    backgroundColor: '#1B263B',
-    borderRadius: 10,
-    padding: 20,
-    width: '100%',
-    maxWidth: 500,
-    elevation: 4,
-    minHeight: '10%',
-    marginBottom: '5%',
-  },
-  caixa3: {
-    alignItems: 'center',
-    fontWeight: 'bold',
-    color: '#E0E1DD',
-    backgroundColor: '#1B263B',
-    borderRadius: 10,
-    padding: 20,
-    width: '100%',
-    maxWidth: 500,
-    elevation: 4,
-    minHeight: '10%',
-    marginBottom: '5%',
-  },
+
   titulo: {
     fontSize: 24,
-    color: '#E0E1DD',
+    color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    fontFamily: 'Arial',
+    }});
+
+const claro = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    minHeight: '100%',
+    
+  },
+
+    
+  
+  caixa: {
+    alignItems: 'center',
+    fontWeight: 'bold',
+    color: 'black',
+    backgroundColor: '#5697FF',
+    borderRadius: 20,
+    padding: 20,
+    width: '100%',
+    elevation: 4,
+    height: 128,
+    marginBottom: '5%',
+    fontFamily: 'Arial',
+  },
+
+  titulo: {
+    fontSize: 24,
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Arial',
   },
   input: {
     backgroundColor: '#415A77',
