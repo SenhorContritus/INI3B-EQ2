@@ -1,6 +1,6 @@
 import React = require("react");
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import * as Location from "expo-location";
 import { useWindowDimensions } from "react-native";
 
@@ -24,18 +24,30 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
 };
 
 export default function Main() {
+  const alarms = [
+    {
+      id: 1,
+      name: "Nome do Alarme",
+      location: "Casa - Cti 📍",
+      eta: "Aprox 35 min",
+      mapImage: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=200x200&key=SUA_API_KEY",
+    },
+  ];
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [weather, setWeather] = useState<string>("");
 
-  // Atualiza o relógio a cada segundo
+  // Responsividade para fontes e botões
+  const baseFont = Math.max(15, Math.round(windowWidth * 0.03));
+  const buttonFont = Math.max(15, Math.round(windowWidth * 0.035));
+  const settingsIconSize = Math.max(24, Math.round(windowWidth * 0.05));
+
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Pega a localização
   useEffect(() => {
     async function getGeoPermission() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -47,7 +59,6 @@ export default function Main() {
     getGeoPermission();
   }, []);
 
-  // Pega o clima quando a localização estiver disponível
   useEffect(() => {
     async function fetchWeather() {
       if (location) {
@@ -78,7 +89,6 @@ export default function Main() {
     fetchWeather();
   }, [location]);
 
-  // Monta a string do cabeçalho
   const weekday = WEEKDAYS[time.getDay()];
   const day = String(time.getDate()).padStart(2, "0");
   const month = String(time.getMonth() + 1).padStart(2, "0");
@@ -88,24 +98,47 @@ export default function Main() {
   return (
     <View style={styles.body}>
       <View style={[styles.top, { width: windowWidth - 40 }]}>
-        <View style={styles.nav}>
-          <Pressable style={styles.navPress}>
-            <Text style={styles.settingsIcon}>⚙️</Text>
-          </Pressable>
-        </View>
-        <View style={styles.clockContainer}>
-          <Text style={styles.clockText}>
-            {time.toLocaleTimeString()}
-          </Text>
-          <Text style={styles.headerText}>{headerString}</Text>
+        <View style={styles.clockMapRow}>
+          <View style={styles.mapColumn}>
+            <View style={styles.fakeMap}>
+              <Text style={{ color: "#fff" }}>MAPA</Text>
+            </View>
+          </View>
+          <View style={styles.clockColumn}>
+            <Pressable style={styles.navPress}>
+              <Text style={[styles.settingsIcon, { fontSize: settingsIconSize }]}>⚙️</Text>
+            </Pressable>
+            <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
+              {time.toLocaleTimeString()}
+            </Text>
+            <Text style={[styles.headerText, { fontSize: baseFont + 7 }]}>{headerString}</Text>
+          </View>
         </View>
       </View>
+
       <View style={styles.content}>
-        <Text style={styles.contentText}>
-          {location
-            ? `Localização: ${location.coords.latitude.toFixed(4)}, ${location.coords.longitude.toFixed(4)}`
-            : "Obtendo localização..."}
-        </Text>
+        {alarms.map((alarm) => (
+          <View key={alarm.id} style={styles.alarmCard}>
+            <Image
+              source={{ uri: alarm.mapImage }}
+              style={styles.alarmMapImg}
+              resizeMode="cover"
+            />
+            <View style={styles.alarmInfo}>
+              <Text style={[styles.alarmName, { fontSize: baseFont + 3 }]}>{alarm.name}</Text>
+              <Text style={[styles.alarmLocation, { fontSize: baseFont }]}>{alarm.location}</Text>
+              <Text style={[styles.alarmEta, { fontSize: baseFont - 1 }]}>{alarm.eta}</Text>
+              <View style={styles.alarmButtons}>
+                <Pressable style={styles.editButton}>
+                  <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Editar</Text>
+                </Pressable>
+                <Pressable style={styles.deleteButton}>
+                  <Text style={[styles.buttonText, { fontSize: buttonFont }]}>X</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -115,7 +148,8 @@ const styles = StyleSheet.create({
   top: {
     margin: 20,
     height: "40%",
-    backgroundColor: "#0050B3",
+    borderRadius: 10,
+    backgroundColor: "#2B2323",
   },
   body: {
     flex: 1,
@@ -138,8 +172,9 @@ const styles = StyleSheet.create({
   },
   navPress: {
     width: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    alignSelf: "flex-end",
   },
   clockContainer: {
     margin: 20,
@@ -159,10 +194,102 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0024147",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: 20,
   },
   contentText: {
     color: "#fff",
     fontSize: 18,
+  },
+  clockMapRow: {
+    flexDirection: "row",
+    width: "100%",
+    height: 200,
+  },
+  clockColumn: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  mapColumn: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fakeMap: {
+    width: "90%",
+    height: 150,
+    backgroundColor: "#333",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  alarmCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2B2323",
+    borderRadius: 16,
+    width: "95%",
+    minHeight: 90,
+    marginBottom: 18,
+    padding: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  alarmMapImg: {
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    marginRight: 12,
+    backgroundColor: "#444",
+  },
+  alarmInfo: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    position: "relative",
+  },
+  alarmName: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  alarmLocation: {
+    color: "#ccc",
+    fontSize: 15,
+    marginTop: 2,
+  },
+  alarmEta: {
+    color: "#bbb",
+    fontSize: 14,
+    marginTop: 2,
+    marginBottom: 8,
+  },
+  alarmButtons: {
+    flexDirection: "row",
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+  },
+  editButton: {
+    backgroundColor: "#5A4F4F",
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  deleteButton: {
+    backgroundColor: "#5A4F4F",
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
