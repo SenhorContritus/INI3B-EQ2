@@ -2,7 +2,7 @@ import React = require("react");
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import * as Location from "expo-location";
-import { Dimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
@@ -23,8 +23,8 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
   Tornado: "🌪️",
 };
 
-
 export default function Main() {
+  const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [weather, setWeather] = useState<string>("");
@@ -46,18 +46,30 @@ export default function Main() {
     }
     getGeoPermission();
   }, []);
-   // Pega o clima quando a localização estiver disponível
+
+  // Pega o clima quando a localização estiver disponível
   useEffect(() => {
     async function fetchWeather() {
       if (location) {
-        // Substitua pela sua chave da API do OpenWeatherMap
-        const API_KEY = "SUA_API_KEY_AQUI";
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${API_KEY}`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${location.coords.latitude}&longitude=${location.coords.longitude}&current_weather=true`;
         try {
           const response = await fetch(url);
           const data = await response.json();
-          const main = data.weather?.[0]?.main || "Clear";
-          setWeather(main);
+          const weatherCode = data.current_weather?.weathercode ?? 0;
+          const WEATHER_CODES: { [key: number]: string } = {
+            0: "Clear",
+            1: "Mainly Clear",
+            2: "Partly Cloudy",
+            3: "Overcast",
+            45: "Fog",
+            48: "Depositing rime fog",
+            51: "Drizzle",
+            61: "Rain",
+            71: "Snow",
+            80: "Rain showers",
+            95: "Thunderstorm",
+          };
+          setWeather(WEATHER_CODES[weatherCode] || "Clear");
         } catch (e) {
           setWeather("Clear");
         }
@@ -73,10 +85,9 @@ export default function Main() {
   const emoji = WEATHER_EMOJIS[weather] || "☀️";
   const headerString = `${weekday} - ${emoji} ${day}/${month}`;
 
-
   return (
     <View style={styles.body}>
-      <View style={styles.top}>
+      <View style={[styles.top, { width: windowWidth - 40 }]}>
         <View style={styles.nav}>
           <Pressable style={styles.navPress}>
             <Text style={styles.settingsIcon}>⚙️</Text>
@@ -100,12 +111,9 @@ export default function Main() {
   );
 }
 
-const windowWidth = Dimensions.get("window").width;
-
 const styles = StyleSheet.create({
   top: {
     margin: 20,
-    width: windowWidth - 40,
     height: "40%",
     backgroundColor: "#0050B3",
   },
@@ -134,10 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   clockContainer: {
-    
-    margin:20,
-    alignSelf: "flex-end",
-    width:"40%",
+    margin: 20,
     alignItems: "center",
   },
   clockText: {
