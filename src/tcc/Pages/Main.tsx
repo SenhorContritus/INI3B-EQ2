@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import * as Location from "expo-location";
 import { useWindowDimensions } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
@@ -24,6 +25,7 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
 };
 
 export default function Main() {
+  const navigation = useNavigation<any>();
   const alarms = [
     {
       id: 1,
@@ -105,7 +107,10 @@ export default function Main() {
             </View>
           </View>
           <View style={styles.clockColumn}>
-            <Pressable style={styles.navPress}>
+            <Pressable style={styles.navPress} onPress={() => {
+          navigation.navigate("ConfigPessoal");
+        }}>
+              
               <Text style={[styles.settingsIcon, { fontSize: settingsIconSize }]}>⚙️</Text>
             </Pressable>
             <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>

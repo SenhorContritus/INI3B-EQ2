@@ -103,8 +103,8 @@ const claro = StyleSheet.create({
   caixa: {
     alignItems: 'center',
     fontWeight: 'bold',
-    color: 'black',
-    backgroundColor: '#5697FF',
+    color: 'white',
+    backgroundColor: '#2B2323',
     borderRadius: 20,
     padding: 20,
     width: '100%',
