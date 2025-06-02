@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
-/*
+/*codigo do app tsx caso de erro dnv
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';

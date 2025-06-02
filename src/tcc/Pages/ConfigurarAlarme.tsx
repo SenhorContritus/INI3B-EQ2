@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+/*import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Switch, Pressable, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -60,7 +60,7 @@ const salvarAlarme = async () => {
 
   return (
     <View style={styles.body}>
-      {/* Mapa */}
+      {/* Mapa *//*}
       <Image
         source={{
           uri: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=600x300&key=SUA_API_KEY",
@@ -69,15 +69,15 @@ const salvarAlarme = async () => {
         resizeMode="cover"
       />
 
-      {/* Card de configuração */}
+      {/* Card de configuração *//*}
       <View style={styles.card}>
-        {/* Data e ícone */}
+        {/* Data e ícone *//*}
         <View style={styles.dataRow}>
           <Text style={styles.dataText}>{data}</Text>
           <Text style={styles.dataIcon}>📅</Text>
         </View>
 
-        {/* Dias da semana */}
+        {/* Dias da semana *//*}
         <View style={styles.diasRow}>
           {dias.map((dia, idx) => (
             <Pressable
@@ -93,7 +93,7 @@ const salvarAlarme = async () => {
           ))}
         </View>
 
-        {/* Nome do alarme */}
+        {/* Nome do alarme *//*}
         <TextInput
           style={styles.input}
           placeholder="nome do alarme"
@@ -102,7 +102,7 @@ const salvarAlarme = async () => {
           onChangeText={setNome}
         />
 
-        {/* Som do alarme */}
+        {/* Som do alarme *//*}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Som do alarme</Text>
@@ -111,7 +111,7 @@ const salvarAlarme = async () => {
           <Switch value={somAtivo} onValueChange={setSomAtivo} />
         </View>
 
-        {/* Padrão de vibração */}
+        {/* Padrão de vibração *//*}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Padrão de vibração</Text>
@@ -120,7 +120,7 @@ const salvarAlarme = async () => {
           <Switch value={vibracaoAtiva} onValueChange={setVibracaoAtiva} />
         </View>
 
-        {/* Adiar */}
+        {/* Adiar *//*}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Adiar</Text>
@@ -129,7 +129,7 @@ const salvarAlarme = async () => {
           <Switch value={adiarAtivo} onValueChange={setAdiarAtivo} />
         </View>
 
-        {/* Botões */}
+        {/* Botões *//*}
         <View style={styles.botoesRow}>
           <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.cancelar}>Cancelar</Text>
@@ -255,4 +255,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
   },
-});
+});*/
