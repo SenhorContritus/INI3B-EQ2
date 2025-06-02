@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Main from "./Pages/Main";
 import ConfigPessoal from "./Pages/ConfigPessoal";
+import TocarAlarme from "./Pages/TocarAlarme";
 
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ export default function App(){
         
       />
       <Stack.Screen name="ConfigPessoal" component={ConfigPessoal} />
+      <Stack.Screen name="TocarAlarme" component={TocarAlarme} />
 
     </Stack.Navigator>
   </NavigationContainer>

@@ -1,18 +1,13 @@
 import { useState } from 'react';
 import React from 'react';
-import { Button, StyleSheet, Text, View, ScrollView, Switch , Pressable} from 'react-native';
+import { Button, StyleSheet, Text, View, Switch , Pressable} from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
 export const ConfigPessoal = () => {
   const navigation = useNavigation<any>();
+  const [temaEscuro, setTemaEscuro] = useState(false);
 
-  const [temaEscuro, setTemaEscuro] = useState(false); // Estado para o switch
-
-  const handleSave = () => {
-    // Aqui você pode adicionar a lógica para salvar as configurações
-    console.log('Configurações salvas:', { temaEscuro });
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -25,27 +20,29 @@ export const ConfigPessoal = () => {
         <Text style={{ fontSize: 24 }}>🔙</Text>
       </Pressable>
 
-      <View style={temaEscuro ? escuro.container : claro.container}>
-        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Configurações Gerais</Text>
-        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+      <View style={temaEscuro ? claro.container : escuro.container}>
+        <Text style={temaEscuro ? claro.titulo : escuro.titulo}>Configurações Gerais</Text>
+        <View style={temaEscuro ? claro.caixa : escuro.caixa}>
           Tema
           <Switch
-            value={temaEscuro}
-            onValueChange={setTemaEscuro}
-            thumbColor={temaEscuro ? "#FFFFFF" : "#193358"}
-            trackColor={{ false: "#FFFFFF", true: "#000000" }}
+        value={temaEscuro}
+        onValueChange={setTemaEscuro}
+        thumbColor={temaEscuro ? "#FFFFFF" : "#193358"}
+        trackColor={{ false: "#FFFFFF", true: "#000000" }}
           />
           Idioma
         </View>
-        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Localizacao</Text>
-        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+        <Text style={temaEscuro ? claro.titulo : escuro.titulo}>Localizacao</Text>
+        <View style={temaEscuro ? claro.caixa : escuro.caixa}>
           Localização
         </View>
-        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Data e hora</Text>
-        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+        <Text style={temaEscuro ? claro.titulo : escuro.titulo}>Data e hora</Text>
+        <View style={temaEscuro ? claro.caixa : escuro.caixa}>
           Data e hora
         </View>
-         
+         <Button onPress={() => {
+          navigation.navigate("TocarAlarme");
+        }} title="Alarme" />
       </View>
     </View>
   );
@@ -54,7 +51,7 @@ export const ConfigPessoal = () => {
 
 const escuro = StyleSheet.create({
   container: {
-    backgroundColor: '#000000',
+    backgroundColor: '#1E1E1E',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -69,7 +66,7 @@ const escuro = StyleSheet.create({
     alignItems: 'center',
     fontWeight: 'bold',
     color: 'white',
-    backgroundColor: '#193358',
+    backgroundColor: '#2B2323',
     borderRadius: 20,
     padding: 20,
     width: '100%',
@@ -95,7 +92,7 @@ const claro = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     minHeight: '100%',
-    
+    color: '1E1E1E',
   },
 
     
