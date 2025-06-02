@@ -1,6 +1,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Main from "./Pages/Main";
 import ConfigPessoal from "./Pages/ConfigPessoal";
 
 const Stack = createNativeStackNavigator();
@@ -15,10 +16,11 @@ export default function App(){
       }}
     >
       <Stack.Screen
-        name=" "
-        component={ConfigPessoal}
+        name="Main"
+        component={Main}
         
       />
+      <Stack.Screen name="ConfigPessoal" component={ConfigPessoal} />
 
     </Stack.Navigator>
   </NavigationContainer>
