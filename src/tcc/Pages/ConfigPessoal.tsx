@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import React from 'react';
-import { Button, StyleSheet, Text, View, ScrollView, Switch } from 'react-native';
+import { Button, StyleSheet, Text, View, ScrollView, Switch , Pressable} from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 export const ConfigPessoal = () => {
+  const navigation = useNavigation<any>();
 
-
- const [temaEscuro, setTemaEscuro] = useState(false); // Estado para o switch
+  const [temaEscuro, setTemaEscuro] = useState(false); // Estado para o switch
 
   const handleSave = () => {
     // Aqui você pode adicionar a lógica para salvar as configurações
@@ -13,30 +15,38 @@ export const ConfigPessoal = () => {
   };
 
   return (
-    
-    <View style={temaEscuro ? escuro.container : claro.container}>
-      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Configurações Gerais</Text>
-      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
-      Tema
-      <Switch
-        value={temaEscuro}
-        onValueChange={setTemaEscuro}
-        thumbColor={temaEscuro ? "#FFFFFF" : "#193358"}
-        trackColor={{ false: "#FFFFFF", true: "#000000" }}
-      />
-      Idioma
+    <View style={{ flex: 1 }}>
+      <Pressable
+        style={{ position: 'absolute', top: 40, left: 20, zIndex: 1 }}
+        onPress={() => {
+          navigation.navigate("Main");
+        }}
+      >
+        <Text style={{ fontSize: 24 }}>🔙</Text>
+      </Pressable>
+
+      <View style={temaEscuro ? escuro.container : claro.container}>
+        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Configurações Gerais</Text>
+        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+          Tema
+          <Switch
+            value={temaEscuro}
+            onValueChange={setTemaEscuro}
+            thumbColor={temaEscuro ? "#FFFFFF" : "#193358"}
+            trackColor={{ false: "#FFFFFF", true: "#000000" }}
+          />
+          Idioma
+        </View>
+        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Localizacao</Text>
+        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+          Localização
+        </View>
+        <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Data e hora</Text>
+        <View style={temaEscuro ? escuro.caixa : claro.caixa}>
+          Data e hora
+        </View>
+         
       </View>
-      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Localizacao</Text>
-      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
-      Localização
-      </View>
-      <Text style={temaEscuro ? escuro.titulo : claro.titulo}>Data e hora</Text>
-      <View style={temaEscuro ? escuro.caixa : claro.caixa}>
-        
-      Data e hora
-        
-      </View>
-      <Button title="Salvar" onPress={handleSave} />
     </View>
   );
 }
