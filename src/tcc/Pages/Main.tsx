@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   alarmCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#2B2323",
+    backgroundColor: "# ",
     borderRadius: 16,
     width: "95%",
     minHeight: 90,

@@ -104,7 +104,7 @@ const claro = StyleSheet.create({
     alignItems: 'center',
     fontWeight: 'bold',
     color: 'white',
-    backgroundColor: '#2B2323',
+    backgroundColor: "#2B2323",
     borderRadius: 20,
     padding: 20,
     width: '100%',
