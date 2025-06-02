@@ -5,6 +5,7 @@ import * as Location from "expo-location";
 import { useWindowDimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
+
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
   Thunderstorm: "⛈️",
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
   alarmCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "# ",
+    backgroundColor: "#2B2323",
     borderRadius: 16,
     width: "95%",
     minHeight: 90,

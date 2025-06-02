@@ -93,6 +93,7 @@ const claro = StyleSheet.create({
     padding: 20,
     minHeight: '100%',
     color: '1E1E1E',
+    backgroundColor: '#dcdcdc',
   },
 
     
@@ -101,7 +102,7 @@ const claro = StyleSheet.create({
     alignItems: 'center',
     fontWeight: 'bold',
     color: 'white',
-    backgroundColor: "#2B2323",
+    backgroundColor: "#a7a7a7",
     borderRadius: 20,
     padding: 20,
     width: '100%',
@@ -113,7 +114,7 @@ const claro = StyleSheet.create({
 
   titulo: {
     fontSize: 24,
-    color: 'black',
+    color: '#2B2323',
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
