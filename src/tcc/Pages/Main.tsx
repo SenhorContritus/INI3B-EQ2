@@ -2,7 +2,16 @@ import React = require("react");
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
+
+// Defina o tipo das rotas do seu stack
+type RootStackParamList = {
+  Main: undefined;
+  ConfigPessoal: undefined;
+  ConfigurarAlarme: { alarmId: number };
+};
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
@@ -24,6 +33,8 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
 };
 
 export default function Main() {
+  // Tipando a navegação
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const alarms = [
     {
       id: 1,
@@ -105,7 +116,10 @@ export default function Main() {
             </View>
           </View>
           <View style={styles.clockColumn}>
-            <Pressable style={styles.navPress}>
+            <Pressable
+              style={styles.navPress}
+              onPress={() => navigation.navigate("ConfigPessoal")}
+            >
               <Text style={[styles.settingsIcon, { fontSize: settingsIconSize }]}>⚙️</Text>
             </Pressable>
             <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
@@ -129,7 +143,10 @@ export default function Main() {
               <Text style={[styles.alarmLocation, { fontSize: baseFont }]}>{alarm.location}</Text>
               <Text style={[styles.alarmEta, { fontSize: baseFont - 1 }]}>{alarm.eta}</Text>
               <View style={styles.alarmButtons}>
-                <Pressable style={styles.editButton}>
+                <Pressable
+                  style={styles.editButton}
+                  onPress={() => navigation.navigate("ConfigurarAlarme", { alarmId: alarm.id })}
+                >
                   <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Editar</Text>
                 </Pressable>
                 <Pressable style={styles.deleteButton}>
