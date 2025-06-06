@@ -129,6 +129,20 @@ export default function Main() {
       )
     )
   ]
+
+  const modifyAlarm = () => {
+    //chama a tela configuração alarm, passando o alarme como parametro
+    return null
+  }
+
+  const deleteAlarm = () =>{
+    //deleta o alarm que foi passado como parametro
+    return null
+  }
+
+  const showAlarm = () => {
+    return alarms.map(a => <CompAlarm data={a} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
+  }
     
 
 
@@ -159,7 +173,7 @@ export default function Main() {
         </View>
       </View>
       <View style={styles.alarmsContainer}>
-              
+        {showAlarm()}
       </View>
       <View style={styles.buttonNewView}>
         <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarmId: undefined})}>
@@ -244,7 +258,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   alarmsContainer:{
-    flex: 0.52
+    flex: 0.52,
+    flexDirection: "column",
+    width: "90%",
   },
   buttonNewView:{
     flex: 0.10,
@@ -257,7 +273,7 @@ const styles = StyleSheet.create({
     backgroundColor:"#010127",
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    height: "81%",
     borderRadius:200,
   },
   buttonNewText:{

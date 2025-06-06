@@ -16,13 +16,16 @@ export default function CompAlarm(props: AlarmProp){
     return(
         <View style={styles.container}>
             <View style={styles.mapView}>
-                Latitude:{props.data.address.x}\n
-                Longitude:{props.data.address.y}\n
-                x: {props.x}\n
-                y: {props.y}\n
+                <Text style={{color:"white"}}>
+                    Latitude:{props.data.address.x}\n
+                    Longitude:{props.data.address.y}\n
+                    x: {props.x}\n
+                    y: {props.y}\n
+                </Text>
             </View>
             <View style={styles.infoView}>
-                <Text>
+                <Text style={styles.titleText}>
+                    {props.data.name}
                 </Text>
                 <Text>
                     Aprox: 
