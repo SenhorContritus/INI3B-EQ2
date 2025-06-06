@@ -38,6 +38,7 @@ class Alarm{
     set alarmProps(alarmProps: AlarmProps){
         this._alarmProps = alarmProps
     }
+    
 
 }
 

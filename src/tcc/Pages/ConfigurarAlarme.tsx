@@ -1,4 +1,4 @@
-/*import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Switch, Pressable, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -6,13 +6,14 @@ import _Alarme from "../types/_alarme";
 import _tarefa from '../types/_alarme';
 
 
-const db = SQLite.openDatabaseSync('alarmes.db'); // Só aqui!
-const [Alarme, setAlarme] = useState<_Alarme[]>([]);
+/*const db = SQLite.openDatabaseSync('alarmes.db'); // Só aqui!
+*/
 
 
 const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 export default function ConfigurarAlarme() {
+  const [Alarme, setAlarme] = useState<_Alarme[]>([]);
   const navigation = useNavigation();
   const [nome, setNome] = useState("");
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
@@ -29,38 +30,38 @@ export default function ConfigurarAlarme() {
   setDiasSelecionados(novosDias);
 }
 
-const [NovoAlarme, setNovoAlarme] = useState<string>('');
+// const [NovoAlarme, setNovoAlarme] = useState<string>('');
 
-const salvarAlarme = async () => {
-  await db.runAsync("InSERT INTO alarmes (nome, dias, somAtivo, vibracaoAtiva, adiarAtivo) VALUES (?, ?, ?, ?, ?) ", NovoAlarme)
-    setNovoAlarme('');
-    await recarregar();
-}
+// const salvarAlarme = async () => {
+//   await db.runAsync("InSERT INTO alarmes (nome, dias, somAtivo, vibracaoAtiva, adiarAtivo) VALUES (?, ?, ?, ?, ?) ", NovoAlarme)
+//     setNovoAlarme('');
+//     await recarregar();
+// }
 
 // ...existing code...
 
- useEffect(() => {
-    db.execSync(`
-          CREATE TABLE IF NOT EXISTS alarmes (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          nome TEXT,
-          dias TEXT,
-          somAtivo text,
-          vibracaoAtiva text,
-          adiarAtivo INTEGER
-                )`);
+//  useEffect(() => {
+//     db.execSync(`
+//           CREATE TABLE IF NOT EXISTS alarmes (
+//           id INTEGER PRIMARY KEY AUTOINCREMENT,
+//           nome TEXT,
+//           dias TEXT,
+//           somAtivo text,
+//           vibracaoAtiva text,
+//           adiarAtivo INTEGER
+//                 )`);
 
-    recarregar();
-  }, []);
+//     recarregar();
+//   }, []);
 
-  const recarregar = async () => {
-    let temp: _Alarme[] = await db.getAllAsync("SELECT * FROM alarmes");
-    setAlarme(temp);
-  }
+//   const recarregar = async () => {
+//     let temp: _Alarme[] = await db.getAllAsync("SELECT * FROM alarmes");
+//     setAlarme(temp);
+//   }
 
   return (
     <View style={styles.body}>
-      {/* Mapa *//*}
+      {/* Mapa */}
       <Image
         source={{
           uri: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=600x300&key=SUA_API_KEY",
@@ -69,7 +70,7 @@ const salvarAlarme = async () => {
         resizeMode="cover"
       />
 
-      {/* Card de configuração *//*}
+      {/* Card de configuração */}
       <View style={styles.card}>
         {/* Data e ícone *//*}
         <View style={styles.dataRow}>
@@ -77,7 +78,7 @@ const salvarAlarme = async () => {
           <Text style={styles.dataIcon}>📅</Text>
         </View>
 
-        {/* Dias da semana *//*}
+        {/* Dias da semana */}
         <View style={styles.diasRow}>
           {dias.map((dia, idx) => (
             <Pressable
@@ -93,7 +94,7 @@ const salvarAlarme = async () => {
           ))}
         </View>
 
-        {/* Nome do alarme *//*}
+        {/* Nome do alarme */}
         <TextInput
           style={styles.input}
           placeholder="nome do alarme"
@@ -102,7 +103,7 @@ const salvarAlarme = async () => {
           onChangeText={setNome}
         />
 
-        {/* Som do alarme *//*}
+        {/* Som do alarme */}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Som do alarme</Text>
@@ -111,7 +112,7 @@ const salvarAlarme = async () => {
           <Switch value={somAtivo} onValueChange={setSomAtivo} />
         </View>
 
-        {/* Padrão de vibração *//*}
+        {/* Padrão de vibração */}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Padrão de vibração</Text>
@@ -120,7 +121,7 @@ const salvarAlarme = async () => {
           <Switch value={vibracaoAtiva} onValueChange={setVibracaoAtiva} />
         </View>
 
-        {/* Adiar *//*}
+        {/* Adiar */}
         <View style={styles.itemRow}>
           <View>
             <Text style={styles.itemTitle}>Adiar</Text>
@@ -129,12 +130,12 @@ const salvarAlarme = async () => {
           <Switch value={adiarAtivo} onValueChange={setAdiarAtivo} />
         </View>
 
-        {/* Botões *//*}
+        {/* Botões */}
         <View style={styles.botoesRow}>
           <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.cancelar}>Cancelar</Text>
           </Pressable>
-          <Pressable onPress={salvarAlarme}>
+          <Pressable >
             <Text style={styles.salvar}>Salvar</Text>
           </Pressable>
         </View>
@@ -255,4 +256,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
   },
-});*/
+});
