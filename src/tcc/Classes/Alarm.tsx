@@ -20,7 +20,7 @@ class Alarm{
     set id(id:number){
         this._id = id
     }
-    get name(){
+    get name(){//o arquivo  dos mlk tao salvo corrijidos aqui separa o código do banco de dados mas mantem aqui e da commit ai dps que eu fazer os babiba eu vou la e implemento o código <3 o codigo do babiba de dados ta no configurar alarme, ninguem tem entao ta separado <3 pode pa então XD
         return this._name;
     }
     set name(name:string){
@@ -38,6 +38,7 @@ class Alarm{
     set alarmProps(alarmProps: AlarmProps){
         this._alarmProps = alarmProps
     }
+    
 
 }
 

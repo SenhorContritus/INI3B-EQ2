@@ -1,10 +1,21 @@
 import React = require("react");
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable, Image } from "react-native";
+import { StyleSheet, View, Text, Pressable, Image, Button } from "react-native";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import Alarm from "../Classes/Alarm";
+import CompAlarm from "../Components/alarmComponent";
+import AlarmProps from "../Classes/AlarmProps";
+import { useFonts } from 'expo-font'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
+type RootStackParamList = {
+  Main: undefined;
+  ConfigPessoal: undefined;
+  ConfigurarAlarme: { alarmId?: number };
+};
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
   Thunderstorm: "⛈️",
@@ -25,16 +36,14 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
 };
 
 export default function Main() {
-  const navigation = useNavigation<any>();
-  const alarms = [
-    {
-      id: 1,
-      name: "Nome do Alarme",
-      location: "Casa - Cti 📍",
-      eta: "Aprox 35 min",
-      mapImage: "https://geojson.io/#map=15.4/-22.345369/-49.058241",
-    },
-  ];
+  // Tipando a navegação
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const [loaded, error] = useFonts({
+    Lexend: require("../assets/fonts/Lexend.ttf")
+  })
+
+  
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -95,207 +104,213 @@ export default function Main() {
   const day = String(time.getDate()).padStart(2, "0");
   const month = String(time.getMonth() + 1).padStart(2, "0");
   const emoji = WEATHER_EMOJIS[weather] || "☀️";
-  const headerString = `${weekday} - ${emoji} ${day}/${month}`;
+  const weatherString = `${weekday} - ${emoji}`;
+  const dayString = `${day}/${month}`;
+
+  const alarms =
+    [
+    new Alarm(
+      1,
+      'babiba',
+      {
+        x: 12312, 
+        y: 121212
+      },
+      new AlarmProps(
+        1,
+        [1,1]
+        ,true,
+        'url',
+        true,
+        'babiba',
+        true,
+        {id: 1, times: 2, timeWait: 2}
+        ,10
+      )
+    )
+  ]
+
+  const modifyAlarm = () => {
+    //chama a tela configuração alarm, passando o alarme como parametro
+    return null
+  }
+
+  const deleteAlarm = () =>{
+    //deleta o alarm que foi passado como parametro
+    return null
+  }
+
+  const showAlarm = () => {
+    return alarms.map(a => <CompAlarm data={a} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
+  }
+    
+
 
   return (
     <View style={styles.body}>
-      <View style={[styles.top, { width: windowWidth - 40 }]}>
-        <View style={styles.clockMapRow}>
-          <View style={styles.mapColumn}>
-            <View style={styles.fakeMap}>
-              <Text style={{ color: "#fff" }}>MAPA</Text>
-            </View>
-          </View>
-          <View style={styles.clockColumn}>
-            <Pressable style={styles.navPress}
-              onPress={() => {
-                navigation.navigate("ConfigPessoal");
-              }}
-            >
-              <Text style={[styles.settingsIcon, { fontSize: settingsIconSize }]}>⚙️</Text>
-            </Pressable>
-            <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
-              {time.toLocaleTimeString()}
-            </Text>
-            <Text style={[styles.headerText, { fontSize: baseFont + 7 }]}>{headerString}</Text>
+      <View style={styles.nav}>
+        <Pressable
+            onPress={() => navigation.navigate("ConfigPessoal")}
+          >
+            <Text style={[styles.settingsIcon, { fontSize: settingsIconSize }]}>⚙️</Text>
+        </Pressable>
+      </View>
+      <View style={[styles.header]}>
+        <View style={styles.mapView}>
+          <View style={styles.fakeMap}>
+            <Text style={{ color: "#fff" }}>{`
+            X: ${location?.coords.latitude} \n
+            Y: ${location?.coords.latitude}
+            `}</Text>
           </View>
         </View>
+        <View style={styles.clockView}>
+          <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
+            {time.toLocaleTimeString([], {timeStyle: 'short'})}
+          </Text>
+          <Text style={[styles.weatherText, { fontSize: baseFont + 3 }]}>{weatherString}</Text>
+          <Text style={[styles.dayText, { fontSize: baseFont + 3 }]}>{dayString}</Text>
+        </View>
       </View>
-
-      <View style={styles.content}>
-        {alarms.map((alarm) => (
-          <View key={alarm.id} style={styles.alarmCard}>
-            <Image
-              source={{ uri: alarm.mapImage }}
-              style={styles.alarmMapImg}
-              resizeMode="cover"
-            />
-            <View style={styles.alarmInfo}>
-              <Text style={[styles.alarmName, { fontSize: baseFont + 3 }]}>{alarm.name}</Text>
-              <Text style={[styles.alarmLocation, { fontSize: baseFont }]}>{alarm.location}</Text>
-              <Text style={[styles.alarmEta, { fontSize: baseFont - 1 }]}>{alarm.eta}</Text>
-              <View style={styles.alarmButtons}>
-                <Pressable style={styles.editButton}>
-                  <Text style={[styles.buttonText, { fontSize: buttonFont }]}>Editar</Text>
-                </Pressable>
-                <Pressable style={styles.deleteButton}>
-                  <Text style={[styles.buttonText, { fontSize: buttonFont }]}>X</Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        ))}
+      <View style={styles.alarmsContainer}>
+        {showAlarm()}
+      </View>
+      <View style={styles.buttonNewView}>
+        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarmId: undefined})}>
+          <Text style={styles.buttonNewText}>+</Text>
+        </Pressable>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  top: {
-    margin: 20,
-    height: "40%",
-    borderRadius: 10,
-    backgroundColor: "#2B2323",
-  },
   body: {
     flex: 1,
-    backgroundColor: "#1E1E1E",
-  },
-  headerText: {
-    fontSize: 22,
-    color: "#fff",
-    fontWeight: "bold",
-    marginTop: 10,
+    flexDirection: 'column',
+    backgroundColor: "#000000",
+    alignItems: 'center',
+    height: '100%'
   },
   nav: {
-    backgroundColor: "#0000000",
+    flex:0.05,
     flexDirection: "row",
-    width: "100%",
+    width: "90%",
     justifyContent: "flex-end",
-    padding: 10,
-    alignItems: "center",
-    height: 60,
-  },
-  navPress: {
-    width: 50,
     alignItems: "flex-end",
-    justifyContent: "flex-end",
-    alignSelf: "flex-end",
   },
-  clockContainer: {
-    margin: 20,
-    alignItems: "center",
+  header: {
+    flex: 0.30 ,
+    flexDirection: 'row',
+    width: '90%',
   },
-  clockText: {
-    fontFamily: "Lexend",
-    fontSize: 48,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  settingsIcon: {
-    fontSize: 30,
-    color: "#0059E6",
-  },
-  content: {
-    flex: 1,
-    backgroundColor: "#0024147",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 20,
-  },
-  contentText: {
-    color: "#fff",
-    fontSize: 18,
-  },
-  clockMapRow: {
-    flexDirection: "row",
-    width: "100%",
-    height: 200,
-  },
-  clockColumn: {
-    flex: 1,
+  mapView: {
+    flex: 0.66,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-  },
-  mapColumn: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    marginRight: '4%',
   },
   fakeMap: {
-    width: "90%",
-    height: 150,
+    flex:0.78,
+    width: "100%",
     backgroundColor: "#333",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
-  alarmCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#2B2323",
-    borderRadius: 16,
-    width: "95%",
-    minHeight: 90,
-    marginBottom: 18,
-    padding: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  alarmMapImg: {
-    width: 70,
-    height: 70,
-    borderRadius: 10,
-    marginRight: 12,
-    backgroundColor: "#444",
-  },
-  alarmInfo: {
-    flex: 1,
-    flexDirection: "column",
+  clockView: {
+    flex: 0.32,
+    
     justifyContent: "center",
-    position: "relative",
+    alignItems: "center",
+
   },
-  alarmName: {
+  weatherText: {
+    fontSize: 22,
     color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "200",
+    textAlign: "center"
   },
-  alarmLocation: {
-    color: "#ccc",
-    fontSize: 15,
-    marginTop: 2,
+  
+  clockText: {
+    fontFamily: "Lexend",
+    fontSize: 48,
+    fontWeight: "200",
+    color: "#fff",
+    textAlign: 'center'
   },
-  alarmEta: {
-    color: "#bbb",
-    fontSize: 14,
-    marginTop: 2,
-    marginBottom: 8,
+  dayText:{
+    fontFamily: "Lexend",
+    fontSize: 48,
+    fontWeight: "200",
+    color: "#fff",
+    textAlign: 'center'
   },
-  alarmButtons: {
-    flexDirection: "row",
-    position: "absolute",
-    right: 0,
-    bottom: 0,
+  settingsIcon: {
+    fontSize: 30,
+    color: "#0059E6",
   },
-  editButton: {
-    backgroundColor: "#5A4F4F",
-    paddingVertical: 4,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  deleteButton: {
-    backgroundColor: "#5A4F4F",
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
+  
+  
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 15,
   },
+  alarmsContainer:{
+    flex: 0.52,
+    flexDirection: "column",
+    width: "90%",
+  },
+  buttonNewView:{
+    flex: 0.10,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: "90%",
+  },
+  buttonNewPress:{
+    flex: 0.20,
+    backgroundColor:"#010127",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "81%",
+    borderRadius:200,
+  },
+  buttonNewText:{
+    flex: 1,
+    fontFamily: "Lexend",
+    fontSize: 50,
+    fontWeight: "300",
+    color: "#fff",
+    textAlign: "center",
+    width: "100%",
+    height: "100%",
+  }
 });
+/*codigo do app tsx caso de erro dnv
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import Main from "./Pages/Main";
+import ConfigPessoal from "./Pages/ConfigPessoal";
+import ConfigurarAlarme from "./Pages/ConfigurarAlarme";
+import TocarAlarme from "./Pages/TocarAlarme";
+
+
+const Stack = createNativeStackNavigator();
+
+
+export default function App(){
+  return <NavigationContainer>
+    
+    <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Screen name="Main" component={Main}/>
+      <Stack.Screen name="ConfigPessoal" component={ConfigPessoal} />
+      <Stack.Screen name="ConfigurarAlarme" component={ConfigurarAlarme} />
+      <Stack.Screen name="TocarAlarme" component={TocarAlarme} />
+    </Stack.Navigator>
+  </NavigationContainer>
+};
+
+*/ 

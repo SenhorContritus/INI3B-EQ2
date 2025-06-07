@@ -1,6 +1,7 @@
 import React = require("react");
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated } from "react-native";
+import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated, Button } from "react-native";
+
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const w = (value: number) => (value / 440) * SCREEN_WIDTH;
@@ -37,6 +38,7 @@ function AnimatedButton({ style, onPress, children }: any) {
       >
         {children}
       </Pressable>
+
     </Animated.View>
   );
 }
