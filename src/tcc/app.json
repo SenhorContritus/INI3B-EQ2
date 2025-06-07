@@ -37,13 +37,6 @@
         {
           "inAndroidForegroundLocationEnabled": true
         }
-      ],
-      [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsVersion": "11.8.0",
-          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiZHVhcmRvIiwiYSI6ImNtYXF2a2FwdzA0YmIyam9uMTh3d3g1cGIifQ.-B3MuG5UFdw3Vznwe7ZNuA"
-        }
       ]
     ]
   }
