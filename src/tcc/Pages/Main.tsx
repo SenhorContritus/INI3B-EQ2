@@ -9,7 +9,7 @@ import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
 import AlarmProps from "../Classes/AlarmProps";
 import { useFonts } from 'expo-font'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 type RootStackParamList = {
   Main: undefined;
