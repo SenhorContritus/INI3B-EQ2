@@ -8,13 +8,13 @@ import { useWindowDimensions } from "react-native";
 import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
 import AlarmProps from "../Classes/AlarmProps";
-import { useFonts } from 'expo-font'
-
+import { useFonts } from 'expo-font';
+import MapView from "react-native-maps";
 
 type RootStackParamList = {
-  Main: undefined;
-  ConfigPessoal: undefined;
-  ConfigurarAlarme: { alarmId?: number };
+  Main: undefined,
+  ConfigPessoal: undefined,
+  ConfigurarAlarme: { alarmId?: number }
 };
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
@@ -141,7 +141,7 @@ export default function Main() {
   }
 
   const showAlarm = () => {
-    return alarms.map(a => <CompAlarm data={a} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
+    return alarms.map(a => <CompAlarm data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
   }
     
 
@@ -157,12 +157,7 @@ export default function Main() {
       </View>
       <View style={[styles.header]}>
         <View style={styles.mapView}>
-          <View style={styles.fakeMap}>
-            <Text style={{ color: "#fff" }}>{`
-            X: ${location?.coords.latitude} \n
-            Y: ${location?.coords.latitude}
-            `}</Text>
-          </View>
+          <MapView style={styles.fakeMap}/>
         </View>
         <View style={styles.clockView}>
           <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
@@ -211,7 +206,7 @@ const styles = StyleSheet.create({
     marginRight: '4%',
   },
   fakeMap: {
-    flex:0.78,
+    flex:0.74,
     width: "100%",
     backgroundColor: "#333",
     borderRadius: 10,
@@ -219,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   clockView: {
-    flex: 0.32,
+    flex: 0.36,
     
     justifyContent: "center",
     alignItems: "center",
