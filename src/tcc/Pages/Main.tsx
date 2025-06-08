@@ -143,7 +143,6 @@ export default function Main() {
   const showAlarm = () => {
     return alarms.map(a => <CompAlarm data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
   }
-    
 
 
   return (
@@ -157,7 +156,20 @@ export default function Main() {
       </View>
       <View style={[styles.header]}>
         <View style={styles.mapView}>
-          <MapView style={styles.fakeMap}/>
+          <MapView 
+            style={styles.fakeMap}
+            initialCamera={{
+              center:{
+                latitude: 37.78825,
+                longitude: -122.4324,
+              },
+              pitch: 0,
+              heading: 0,
+              altitude: 1000,
+              zoom: 200
+            }}
+            showsUserLocation={true}
+          />
         </View>
         <View style={styles.clockView}>
           <Text style={[styles.clockText, { fontSize: baseFont + 30 }]}>
@@ -168,7 +180,6 @@ export default function Main() {
         </View>
       </View>
       <View style={styles.alarmsContainer}>
-        {showAlarm()}
       </View>
       <View style={styles.buttonNewView}>
         <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarmId: undefined})}>
@@ -204,18 +215,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: '4%',
+   
   },
   fakeMap: {
     flex:0.74,
     width: "100%",
-    backgroundColor: "#333",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 10
   },
   clockView: {
     flex: 0.36,
-    
     justifyContent: "center",
     alignItems: "center",
 
