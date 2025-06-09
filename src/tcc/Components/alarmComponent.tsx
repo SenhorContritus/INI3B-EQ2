@@ -3,6 +3,7 @@ import Alarm from "../Classes/Alarm";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import MapView from "react-native-maps";
 
 type AlarmProp = {
     data: Alarm,
@@ -16,33 +17,34 @@ export default function CompAlarm(props: AlarmProp){
     return(
         <View style={styles.container}>
             <View style={styles.mapView}>
-                <Text style={{color:"white"}}>
-                    Latitude:{props.data.address.x}\n
-                    Longitude:{props.data.address.y}\n
-                    x: {props.x}\n
-                    y: {props.y}\n
-                </Text>
+                <MapView 
+                    initialRegion={{
+                        latitude: props.x? props.x: 0,
+                        longitude: props.y? props.y : 0,
+                        latitudeDelta: 0.98,
+                        longitudeDelta: 0.09
+                    }}
+                />
             </View>
             <View style={styles.infoView}>
                 <Text style={styles.titleText}>
                     {props.data.name}
                 </Text>
-                <Text>
+                <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text>
-                    Latitude:{props.data.address.x}
-                    Longitude:{props.data.address.y}
+                <Text style={styles.infoText}>{`X:${props.data.address.x}\nY:${props.data.address.y}
+                `}
                 </Text>
             </View>
             <View style={styles.optionsView}>
-                <Pressable>
-                    <Text>
+                <Pressable style={styles.btEdit}>
+                    <Text style={styles.btText}>
                         Editar
                     </Text>
                 </Pressable>
-                <Pressable>
-                    <Text>
+                <Pressable style={styles.btDelete}>
+                    <Text style={styles.btText}>
                         X
                     </Text>
                 </Pressable>

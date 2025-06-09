@@ -2,8 +2,8 @@ import _prostponeProps from "../types/_prostponeProps";
 import Alarm from "./Alarm";
 
 class AlarmProps{
-    private propsId: number;
-    private startTime: number[];
+    private Id: number;
+    private active: boolean;
     private sound: boolean;
     private soundUrl: string;
     private vibration: boolean;
@@ -12,9 +12,9 @@ class AlarmProps{
     private prostponeProps: _prostponeProps;
     private volume: number;
 
-    public constructor(propsId: number, startTime:number[], sound: boolean, soundUrl:string, vibration:boolean, vibrationType:string, prostpone:boolean, prostponeProps: _prostponeProps, volume:number){
-        this.propsId = propsId;
-        this.startTime = startTime;
+    public constructor(propsId: number, active:boolean, sound: boolean, soundUrl:string, vibration:boolean, vibrationType:string, prostpone:boolean, prostponeProps: _prostponeProps, volume:number){
+        this.Id = propsId;
+        this.active = active;
         this.sound = sound;
         this.soundUrl = soundUrl;
         this.vibration = vibration;

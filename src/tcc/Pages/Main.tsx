@@ -2,20 +2,17 @@ import React = require("react");
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, Image, Button } from "react-native";
 import * as Location from "expo-location";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
-import Alarm from "../Classes/Alarm";
-import CompAlarm from "../Components/alarmComponent";
-import AlarmProps from "../Classes/AlarmProps";
 import { useFonts } from 'expo-font';
 import MapView from "react-native-maps";
+import * as SQLite from "expo-sqlite"
+import Alarm from "../Classes/Alarm";
+import CompAlarm from "../Components/alarmComponent";
 
-type RootStackParamList = {
-  Main: undefined,
-  ConfigPessoal: undefined,
-  ConfigurarAlarme: { alarmId?: number }
-};
+
+
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
 const WEATHER_EMOJIS: { [key: string]: string } = {
   Thunderstorm: "⛈️",
@@ -35,24 +32,46 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
   Tornado: "🌪️",
 };
 
-export default function Main() {
-  // Tipando a navegação
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+export const Main = ({ route , navigation}) => {
 
+  // Tipando a navegação
+  
   const [loaded, error] = useFonts({
     Lexend: require("../assets/fonts/Lexend.ttf")
   })
 
   
+  
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [weather, setWeather] = useState<string>("");
+  const [alarms, setAlarm] = useState<Alarm[]>([])
 
   // Responsividade para fontes e botões
   const baseFont = Math.max(15, Math.round(windowWidth * 0.03));
   const buttonFont = Math.max(15, Math.round(windowWidth * 0.035));
   const settingsIconSize = Math.max(24, Math.round(windowWidth * 0.05));
+
+  async function getGeoPermission() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status == "granted") {
+        const loc = await Location.getCurrentPositionAsync();
+        setLocation(loc);
+      }
+  }
+
+  const verifyNewAlarm = () =>{
+    if(route.params?.alarm){
+      return setAlarm([...alarms, route.params.alarm])
+    }else{
+      console.log("editar")
+    }
+  }
+
+  useEffect(() =>{
+    verifyNewAlarm()
+  },[route.params?.alarm])
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -60,15 +79,9 @@ export default function Main() {
   }, []);
 
   useEffect(() => {
-    async function getGeoPermission() {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status == "granted") {
-        const loc = await Location.getCurrentPositionAsync();
-        setLocation(loc);
-      }
-    }
     getGeoPermission();
-  }, []);
+  },[]);
+
 
   useEffect(() => {
     async function fetchWeather() {
@@ -100,35 +113,14 @@ export default function Main() {
     fetchWeather();
   }, [location]);
 
+
+
   const weekday = WEEKDAYS[time.getDay()];
   const day = String(time.getDate()).padStart(2, "0");
   const month = String(time.getMonth() + 1).padStart(2, "0");
   const emoji = WEATHER_EMOJIS[weather] || "☀️";
   const weatherString = `${weekday} - ${emoji}`;
   const dayString = `${day}/${month}`;
-
-  const alarms =
-    [
-    new Alarm(
-      1,
-      'babiba',
-      {
-        x: 12312, 
-        y: 121212
-      },
-      new AlarmProps(
-        1,
-        [1,1]
-        ,true,
-        'url',
-        true,
-        'babiba',
-        true,
-        {id: 1, times: 2, timeWait: 2}
-        ,10
-      )
-    )
-  ]
 
   const modifyAlarm = () => {
     //chama a tela configuração alarm, passando o alarme como parametro
@@ -141,7 +133,8 @@ export default function Main() {
   }
 
   const showAlarm = () => {
-    return alarms.map(a => <CompAlarm data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
+    const data = alarms.map(a => <CompAlarm data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={null} handleEditPress={null} />)
+    return data
   }
 
 
@@ -158,15 +151,12 @@ export default function Main() {
         <View style={styles.mapView}>
           <MapView 
             style={styles.fakeMap}
-            initialCamera={{
-              center:{
-                latitude: 37.78825,
-                longitude: -122.4324,
-              },
-              pitch: 0,
-              heading: 0,
-              altitude: 1000,
-              zoom: 200
+            initialRegion={{
+              
+              latitude: 22,
+              longitude: 22,
+              latitudeDelta: 0.9,
+              longitudeDelta: 0.9
             }}
             showsUserLocation={true}
           />
@@ -180,9 +170,10 @@ export default function Main() {
         </View>
       </View>
       <View style={styles.alarmsContainer}>
+        {showAlarm()}
       </View>
       <View style={styles.buttonNewView}>
-        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarmId: undefined})}>
+        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined})}>
           <Text style={styles.buttonNewText}>+</Text>
         </Pressable>
       </View>

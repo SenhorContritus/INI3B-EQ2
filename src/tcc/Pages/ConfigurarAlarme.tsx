@@ -1,63 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Switch, Pressable, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import * as SQLite from 'expo-sqlite';
-import _Alarme from "../types/_alarme";
-import _tarefa from '../types/_alarme';
-
-
-/*const db = SQLite.openDatabaseSync('alarmes.db'); // Só aqui!
-*/
-
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import Alarm from "../Classes/Alarm";
+import * as SQLite from "expo-sqlite"
+const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
 const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
 
-export default function ConfigurarAlarme() {
-  const [Alarme, setAlarme] = useState<_Alarme[]>([]);
-  const navigation = useNavigation();
+export const ConfigurarAlarme = ({route, navigation}) => {
+
+  const editAlarm = route.params
+  const [Alarme, setAlarme] = useState<Alarm>();  
   const [nome, setNome] = useState("");
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
 
+  
+
   // Exemplo de data fixa
   const data = "13 de fevereiro de 2025";
 
   function toggleDia(index: number) {
-  const novosDias = [...diasSelecionados]; //spread operator para criar uma cópia do array
-  novosDias[index] = !novosDias[index];
-  setDiasSelecionados(novosDias);
-}
+    const novosDias = [...diasSelecionados]; //spread operator para criar uma cópia do array
+    novosDias[index] = !novosDias[index];
+    setDiasSelecionados(novosDias);
+  }
 
-// const [NovoAlarme, setNovoAlarme] = useState<string>('');
-
-// const salvarAlarme = async () => {
-//   await db.runAsync("InSERT INTO alarmes (nome, dias, somAtivo, vibracaoAtiva, adiarAtivo) VALUES (?, ?, ?, ?, ?) ", NovoAlarme)
-//     setNovoAlarme('');
-//     await recarregar();
-// }
-
-// ...existing code...
-
-//  useEffect(() => {
-//     db.execSync(`
-//           CREATE TABLE IF NOT EXISTS alarmes (
-//           id INTEGER PRIMARY KEY AUTOINCREMENT,
-//           nome TEXT,
-//           dias TEXT,
-//           somAtivo text,
-//           vibracaoAtiva text,
-//           adiarAtivo INTEGER
-//                 )`);
-
-//     recarregar();
-//   }, []);
-
-//   const recarregar = async () => {
-//     let temp: _Alarme[] = await db.getAllAsync("SELECT * FROM alarmes");
-//     setAlarme(temp);
-//   }
+  const saveAlarm = () => {
+    setAlarme(new Alarm(1, nome, {x: undefined,y: undefined}, null))
+    if(Alarme){
+      return navigation.popTo("Main", {alarm: Alarme})
+    }
+    
+  }
 
   return (
     <View style={styles.body}>
@@ -135,7 +113,7 @@ export default function ConfigurarAlarme() {
           <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.cancelar}>Cancelar</Text>
           </Pressable>
-          <Pressable >
+          <Pressable onPress={saveAlarm}>
             <Text style={styles.salvar}>Salvar</Text>
           </Pressable>
         </View>
