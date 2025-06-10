@@ -5,6 +5,11 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
 import AlarmProps from "../Classes/AlarmProps";
+import Geocoder from "react-native-geocoding";
+import _coords from "../types/_coords";
+
+Geocoder.init("AIzaSyDiy5Bw6J8_7DBLJ0CWUfeUZUFuoTHGqMs")
+
 const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
 const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
@@ -18,9 +23,26 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
+  const [coords, setCoords] = useState<_coords>()
+  const [address, setAddress] = useState("")
   
   // Exemplo de data fixa
   const data = "13 de fevereiro de 2025";
+
+  const findLocation = (address: string) => {
+    setAddress(address)
+    Geocoder.from(address)
+    .then(json => {
+      let location = json.results[0].geometry.location
+      console.log(location)
+      
+      return setCoords({x:location.lat , y: location.lng})
+    })
+    .catch( err => {
+      return console.warn(err)
+    })
+  }
+
 
   function toggleDia(index: number) {
     const novosDias = [...diasSelecionados]; //spread operator para criar uma cópia do array
@@ -35,7 +57,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords?.x ,y: coords?.y}, address,new AlarmProps( id, true,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
@@ -45,7 +67,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords?.x ,y: coords?.y}, address,new AlarmProps(Alarme?.id, true,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
@@ -54,6 +76,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       const alarme = props?.alarm
       setAlarme(props?.alarm)
       setNome(alarme.name)
+      setAddress(alarme.address)
       setDiasSelecionados(alarme.alarmProps.daysActive)
       setSomAtivo(alarme.alarmProps.sound)
       setVibracaoAtiva(alarme.alarmProps.vibration)
@@ -105,6 +128,14 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           placeholderTextColor="#ccc"
           value={nome}
           onChangeText={setNome}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="endereço"
+          placeholderTextColor="#ccc"
+          value={address}
+          onChangeText={text => findLocation(text)}
         />
 
         {/* Som do alarme */}

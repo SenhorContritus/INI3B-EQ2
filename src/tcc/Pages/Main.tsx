@@ -39,9 +39,6 @@ export const Main = ({ route , navigation}) => {
   const [loaded, error] = useFonts({
     Lexend: require("../assets/fonts/Lexend.ttf")
   })
-
-
-  
   
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());

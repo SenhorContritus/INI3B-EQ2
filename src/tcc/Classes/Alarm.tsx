@@ -1,15 +1,17 @@
-import _address from "../types/_address"
+import _coords from "../types/_coords"
 import AlarmProps from "./AlarmProps";
 
 class Alarm{
     private _id : number;
     private _name: string;
-    private _address: _address;
+    private _coords: _coords;
+    private _address: string;
     private _alarmProps: AlarmProps | null;
     
-    public constructor(id: number, name: string, address: _address, alarmProps: AlarmProps | null){
+    public constructor(id: number, name: string, coords: _coords, address: string,alarmProps: AlarmProps | null){
         this._id = id;
         this._name = name;
+        this._coords = coords;
         this._address = address;
         this._alarmProps = alarmProps;
     }
@@ -26,10 +28,16 @@ class Alarm{
     set name(name:string){
         this.name = name
     }
-    get address(){
-        return this._address;
+    get coords(){
+        return this._coords;
     }
-    set address(address:_address){
+    set coords(coords:_coords){
+        this._coords = coords
+    }
+    get address(){
+        return this._address
+    }
+    set address(address:string){
         this._address = address
     }
     get alarmProps(){
