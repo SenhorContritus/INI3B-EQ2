@@ -67,7 +67,8 @@ export const Main = ({ route , navigation}) => {
       return setAlarm([...alarms, route.params.alarm])
     }
     if(route.params?.alarm && route.params?.edit == true){
-      return alarms.splice(route.params.alarm.id - 1, 1, route.params.alarm)
+      console.log(route.params.alarm.id)
+      return setAlarm(alarms.splice(((route.params.alarm.id) - 1), 1, route.params.alarm))
     }
   }
 

@@ -44,7 +44,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 ))})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
 
