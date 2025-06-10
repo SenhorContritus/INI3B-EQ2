@@ -35,7 +35,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 ))})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
