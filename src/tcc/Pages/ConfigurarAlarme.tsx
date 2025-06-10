@@ -35,7 +35,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
@@ -45,7 +45,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
@@ -54,6 +54,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       const alarme = props?.alarm
       setAlarme(props?.alarm)
       setNome(alarme.name)
+      setDiasSelecionados(alarme.alarmProps.daysActive)
       setSomAtivo(alarme.alarmProps.sound)
       setVibracaoAtiva(alarme.alarmProps.vibration)
       setAdiarAtivo(alarme.alarmProps.prostpone)

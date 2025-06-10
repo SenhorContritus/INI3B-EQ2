@@ -4,6 +4,7 @@ import Alarm from "./Alarm";
 class AlarmProps{
     private _Id: number;
     private _active: boolean;
+    private _daysActive: boolean[];
     private _sound: boolean;
     private _soundUrl: string;
     private _vibration: boolean;
@@ -12,9 +13,10 @@ class AlarmProps{
     private _prostponeProps: _prostponeProps;
     private _volume: number;
 
-    public constructor(propsId: number, active:boolean, sound: boolean, soundUrl:string, vibration:boolean, vibrationType:string, prostpone:boolean, prostponeProps: _prostponeProps, volume:number){
+    public constructor(propsId: number, active:boolean, daysActive: boolean[], sound: boolean, soundUrl:string, vibration:boolean, vibrationType:string, prostpone:boolean, prostponeProps: _prostponeProps, volume:number){
         this._Id = propsId;
         this._active = active;
+        this._daysActive = daysActive;
         this._sound = sound;
         this._soundUrl = soundUrl;
         this._vibration = vibration;
@@ -34,6 +36,12 @@ class AlarmProps{
     }
     set active(active: boolean){
         this._active = active
+    }
+    get daysActive(){
+        return this._daysActive
+    }
+    set daysActive(daysActive: boolean[]){
+        this._daysActive = daysActive
     }
     get sound(){
         return this._sound
