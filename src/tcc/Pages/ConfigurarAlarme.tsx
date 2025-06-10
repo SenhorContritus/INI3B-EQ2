@@ -4,22 +4,21 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
+import AlarmProps from "../Classes/AlarmProps";
 const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
 const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 export const ConfigurarAlarme = ({route, navigation}) => {
 
-  const editAlarm = route.params
-  const [Alarme, setAlarme] = useState<Alarm>();  
+  const props = route.params
+  const [Alarme, setAlarme] = useState<Alarm | undefined>();  
   const [nome, setNome] = useState("");
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
-
   
-
   // Exemplo de data fixa
   const data = "13 de fevereiro de 2025";
 
@@ -29,13 +28,38 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     setDiasSelecionados(novosDias);
   }
 
-  const saveAlarm = () => {
-    setAlarme(new Alarm(1, nome, {x: undefined,y: undefined}, null))
-    if(Alarme){
-      return navigation.popTo("Main", {alarm: Alarme})
+  const createAlarm = () => {
+    console.log("Create")
+    const id = route.params.listLenght
+    let nomeIf = nome
+    if(nomeIf === ""){
+      nomeIf = "Alarm " + id
     }
-    
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: undefined,y: undefined},new AlarmProps( id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 ))})
   }
+  const saveAlarm = () => {
+    console.log("save")
+    if(Alarme){
+      let nomeIf = nome
+      if(nomeIf === ""){
+        nomeIf = "Alarm " + Alarme?.id
+      }
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: undefined,y: undefined},new AlarmProps(Alarme?.id, true, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 ))})
+    }
+  }
+
+  useEffect(() => {
+    if(props.alarm){
+      const alarme = props?.alarm
+      setAlarme(props?.alarm)
+      setNome(alarme.name)
+      setSomAtivo(alarme.alarmProps.sound)
+      setVibracaoAtiva(alarme.alarmProps.vibration)
+      setAdiarAtivo(alarme.alarmProps.prostpone)
+
+    }
+
+  },[props])
 
   return (
     <View style={styles.body}>
@@ -113,7 +137,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           <Pressable onPress={() => navigation.goBack()}>
             <Text style={styles.cancelar}>Cancelar</Text>
           </Pressable>
-          <Pressable onPress={saveAlarm}>
+          <Pressable onPress={Alarme != undefined ? saveAlarm : createAlarm}>
             <Text style={styles.salvar}>Salvar</Text>
           </Pressable>
         </View>

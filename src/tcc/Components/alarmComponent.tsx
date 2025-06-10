@@ -6,6 +6,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import MapView from "react-native-maps";
 
 type AlarmProp = {
+    id: number,
     data: Alarm,
     x?: number,
     y?: number,
@@ -38,12 +39,12 @@ export default function CompAlarm(props: AlarmProp){
                 </Text>
             </View>
             <View style={styles.optionsView}>
-                <Pressable style={styles.btEdit}>
+                <Pressable onPress={() => props.handleEditPress(props.data)} style={styles.btEdit}>
                     <Text style={styles.btText}>
                         Editar
                     </Text>
                 </Pressable>
-                <Pressable style={styles.btDelete}>
+                <Pressable onPress={() => props.handleDeletePress(props.id)} style={styles.btDelete}>
                     <Text style={styles.btText}>
                         X
                     </Text>

@@ -17,9 +17,22 @@ export default function App(){
   return <NavigationContainer>
     
     <Stack.Navigator screenOptions={{headerShown:false}}>
-      <Stack.Screen name="Main" component={Main} initialParams={{alarm: undefined}}/>
+      <Stack.Screen
+        name="Main"
+        component={Main} 
+        initialParams={{
+          alarm: undefined,
+          edit: false,
+        }}/>
       <Stack.Screen name="ConfigPessoal" component={ConfigPessoal} />
-      <Stack.Screen name="ConfigurarAlarme" component={ConfigurarAlarme} />
+      <Stack.Screen
+        name="ConfigurarAlarme" 
+        component={ConfigurarAlarme}
+        initialParams={{
+          alarm: undefined,
+          listLenght:0,
+        }} 
+      />
       <Stack.Screen name="TocarAlarme" component={TocarAlarme} />
     </Stack.Navigator>
   </NavigationContainer>

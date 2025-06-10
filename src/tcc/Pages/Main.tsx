@@ -40,6 +40,7 @@ export const Main = ({ route , navigation}) => {
     Lexend: require("../assets/fonts/Lexend.ttf")
   })
 
+
   
   
   const { width: windowWidth } = useWindowDimensions();
@@ -62,10 +63,11 @@ export const Main = ({ route , navigation}) => {
   }
 
   const verifyNewAlarm = () =>{
-    if(route.params?.alarm){
+    if(route.params?.alarm && route.params.edit == false ){
       return setAlarm([...alarms, route.params.alarm])
-    }else{
-      console.log("editar")
+    }
+    if(route.params?.alarm && route.params?.edit == true){
+      return alarms.splice(route.params.alarm.id - 1, 1, route.params.alarm)
     }
   }
 
@@ -122,18 +124,17 @@ export const Main = ({ route , navigation}) => {
   const weatherString = `${weekday} - ${emoji}`;
   const dayString = `${day}/${month}`;
 
-  const modifyAlarm = () => {
-    //chama a tela configuração alarm, passando o alarme como parametro
-    return null
+  const modifyAlarm = (data: Alarm) => {
+    return navigation.navigate("ConfigurarAlarme", {alarm: data})
   }
 
-  const deleteAlarm = () =>{
-    //deleta o alarm que foi passado como parametro
-    return null
+  const deleteAlarm = (id:number) =>{
+    const newList = alarms.filter(a => a.id != id)
+    return setAlarm(newList)
   }
 
   const showAlarm = () => {
-    const data = alarms.map(a => <CompAlarm data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={null} handleEditPress={null} />)
+    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
     return data
   }
 
@@ -173,7 +174,7 @@ export const Main = ({ route , navigation}) => {
         {showAlarm()}
       </View>
       <View style={styles.buttonNewView}>
-        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined})}>
+        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined, listLenght: alarms.length + 1})}>
           <Text style={styles.buttonNewText}>+</Text>
         </Pressable>
       </View>
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   clockView: {
-    flex: 0.36,
+    flex: 0.38,
     justifyContent: "center",
     alignItems: "center",
 
