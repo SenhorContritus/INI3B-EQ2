@@ -66,6 +66,7 @@ export const Main = ({ route , navigation}) => {
     if(route.params?.alarm && route.params.edit == false ){
       return setAlarm([...alarms, route.params.alarm])
     }
+    //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     if(route.params?.alarm && route.params?.edit == true){
       console.log(route.params.alarm.id)
       return setAlarm(alarms.splice(((route.params.alarm.id) - 1), 1, route.params.alarm))
