@@ -91,7 +91,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       {/* Mapa */}
       <Image
         source={{
-          uri: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=600x300&key=SUA_API_KEY",
+          uri: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=600x300&key=AIzaSyDiy5Bw6J8_7DBLJ0CWUfeUZUFuoTHGqMs",
         }}
         style={styles.map}
         resizeMode="cover"

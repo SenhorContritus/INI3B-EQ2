@@ -42,7 +42,7 @@ export const Main = ({ route , navigation}) => {
   
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<Location.LocationObject>();
   const [weather, setWeather] = useState<string>("");
   const [alarms, setAlarm] = useState<Alarm[]>([])
 
@@ -81,7 +81,7 @@ export const Main = ({ route , navigation}) => {
 
   useEffect(() => {
     getGeoPermission();
-  },[]);
+  },[location]);
 
 
   useEffect(() => {
@@ -152,13 +152,15 @@ export const Main = ({ route , navigation}) => {
           <MapView 
             style={styles.fakeMap}
             initialRegion={{
-              
-              latitude: 22,
-              longitude: 22,
-              latitudeDelta: 0.9,
-              longitudeDelta: 0.9
+              latitude: Number(location?.coords.latitude),
+              longitude: Number(location?.coords.longitude),
+              latitudeDelta: 0.09,
+              longitudeDelta: 0.09
             }}
             showsUserLocation={true}
+            scrollEnabled={false}
+            zoomEnabled={false}
+            
           />
         </View>
         <View style={styles.clockView}>

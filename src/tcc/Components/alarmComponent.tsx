@@ -2,7 +2,6 @@ import React from "react";
 import Alarm from "../Classes/Alarm";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import MapView from "react-native-maps";
 
 type AlarmProp = {
@@ -22,9 +21,10 @@ export default function CompAlarm(props: AlarmProp){
                     initialRegion={{
                         latitude: props.x? props.x: 0,
                         longitude: props.y? props.y : 0,
-                        latitudeDelta: 0.98,
+                        latitudeDelta: 0.09,
                         longitudeDelta: 0.09
                     }}
+                    showsUserLocation={true}
                 />
             </View>
             <View style={styles.infoView}>
@@ -34,7 +34,7 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{`X:${props.data.address.x}\nY:${props.data.address.y}
+                <Text style={styles.infoText}>{`X:${props.data.coords.x}\nY:${props.data.coords.y}
                 `}
                 </Text>
             </View>
