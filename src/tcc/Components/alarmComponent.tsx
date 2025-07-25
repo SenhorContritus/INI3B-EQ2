@@ -18,9 +18,9 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <View style={styles.mapView}>
                 <MapView 
-                    initialRegion={{
-                        latitude: props.x? props.x: 0,
-                        longitude: props.y? props.y : 0,
+                    region={{
+                        latitude:  0,
+                        longitude: 0,
                         latitudeDelta: 0.09,
                         longitudeDelta: 0.09
                     }}

@@ -29,18 +29,29 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   // Exemplo de data fixa
   const data = "13 de fevereiro de 2025";
 
-  const findLocation = (address: string) => {
-    setAddress(address)
-    Geocoder.from(address)
-    .then(json => {
-      let location = json.results[0].geometry.location
-      console.log(location)
+  const findLocation = async () => {
+    try {
+      const find = await fetch(`https://geocode.maps.co/search?q=${address}&api_key=${process.env.EXPO_PUBLIC_GEOLOC_API_KEY}`)
+      if(!find.ok){
+        throw new Error("[API FETCH]:NOGGERS ERROR");
+      }else{
+        const response = await find.json()
+        if(response){
+          const latlong:_coords = {x:response.lat, y:response.lon}
+          console.warn(Number(response.lon))
+          return setCoords(latlong)
+        }
+        else{
+          throw new Error("Empty promisse");
+        }
+        
+      }
       
-      return setCoords({x:location.lat , y: location.lng})
-    })
-    .catch( err => {
-      return console.warn(err)
-    })
+    } catch (error) {
+      return window.alert(error)
+    }
+
+    
   }
 
 
@@ -135,7 +146,8 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           placeholder="endereço"
           placeholderTextColor="#ccc"
           value={address}
-          onChangeText={text => findLocation(text)}
+          onChangeText={setAddress}
+          onSubmitEditing={findLocation}
         />
 
         {/* Som do alarme */}

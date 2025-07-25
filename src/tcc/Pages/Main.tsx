@@ -42,9 +42,10 @@ export const Main = ({ route , navigation}) => {
   
   const { width: windowWidth } = useWindowDimensions();
   const [time, setTime] = useState(new Date());
-  const [location, setLocation] = useState<Location.LocationObject>();
+  const [location, setLocation] = useState<Location.LocationObject>({coords: {latitude:0, longitude:0, accuracy:0, altitude:0, altitudeAccuracy:0, heading:0, speed:0}, timestamp:0,mocked: false});
   const [weather, setWeather] = useState<string>("");
   const [alarms, setAlarm] = useState<Alarm[]>([])
+  const [geoPermissionGranted, setGeoPermissionGranted] = useState<Location.PermissionStatus>()
 
   // Responsividade para fontes e botões
   const baseFont = Math.max(15, Math.round(windowWidth * 0.03));
@@ -54,8 +55,7 @@ export const Main = ({ route , navigation}) => {
   async function getGeoPermission() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status == "granted") {
-        const loc = await Location.getCurrentPositionAsync();
-        setLocation(loc);
+        setGeoPermissionGranted(status)
       }
   }
 
@@ -81,8 +81,17 @@ export const Main = ({ route , navigation}) => {
 
   useEffect(() => {
     getGeoPermission();
-  },[location]);
+  },[]);
 
+  useEffect(() => {
+    const getCoords = async() => {
+      if(true){
+        const loc = await Location.getCurrentPositionAsync();
+        return setLocation(loc)
+      }
+    }
+    getCoords()
+  },[location])
 
   useEffect(() => {
     async function fetchWeather() {
@@ -151,15 +160,27 @@ export const Main = ({ route , navigation}) => {
         <View style={styles.mapView}>
           <MapView 
             style={styles.fakeMap}
-            initialRegion={{
-              latitude: Number(location?.coords.latitude),
-              longitude: Number(location?.coords.longitude),
+            region={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
               latitudeDelta: 0.09,
               longitudeDelta: 0.09
             }}
+            
+            camera={{
+              center:{
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+              },
+              zoom: 18,
+              heading: location.coords.heading == null? 0 : location.coords.heading,
+              altitude: 1000,
+              pitch: 0
+              
+            }}
+            showsCompass={false}
             showsUserLocation={true}
-            scrollEnabled={false}
-            zoomEnabled={false}
+            mapType={"standard"}
             
           />
         </View>
