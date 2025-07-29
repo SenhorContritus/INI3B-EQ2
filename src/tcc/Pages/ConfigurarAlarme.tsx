@@ -19,11 +19,12 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   const props = route.params
   const [Alarme, setAlarme] = useState<Alarm | undefined>();  
   const [nome, setNome] = useState("");
+  const [ativo, setAtivo] = useState(Boolean)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
-  const [coords, setCoords] = useState<_coords>()
+  const [coords, setCoords] = useState<_coords>({x:0 , y:0})
   const [address, setAddress] = useState("")
   
   // Exemplo de data fixa
@@ -36,9 +37,8 @@ export const ConfigurarAlarme = ({route, navigation}) => {
         throw new Error("[API FETCH]:NOGGERS ERROR");
       }else{
         const response = await find.json()
-        if(response){
-          const latlong:_coords = {x:response.lat, y:response.lon}
-          console.warn(Number(response.lon))
+        if(response != ''){
+          const latlong:_coords = {x:response[0].lat, y:response[0].lon}
           return setCoords(latlong)
         }
         else{
@@ -68,7 +68,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords?.x ,y: coords?.y}, address,new AlarmProps( id, true,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, ativo,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
@@ -78,7 +78,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords?.x ,y: coords?.y}, address,new AlarmProps(Alarme?.id, true,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps(Alarme?.id, ativo,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
@@ -100,13 +100,9 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   return (
     <View style={styles.body}>
       {/* Mapa */}
-      <Image
-        source={{
-          uri: "https://maps.googleapis.com/maps/api/staticmap?center=-23.55052,-46.633308&zoom=13&size=600x300&key=AIzaSyDiy5Bw6J8_7DBLJ0CWUfeUZUFuoTHGqMs",
-        }}
-        style={styles.map}
-        resizeMode="cover"
-      />
+      <View style={styles.map}>
+
+      </View>
 
       {/* Card de configuração */}
       <View style={styles.card}>

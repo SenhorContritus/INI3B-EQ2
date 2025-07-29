@@ -91,7 +91,7 @@ export const Main = ({ route , navigation}) => {
       }
     }
     getCoords()
-  },[location])
+  },[])
 
   useEffect(() => {
     async function fetchWeather() {
@@ -180,7 +180,13 @@ export const Main = ({ route , navigation}) => {
             }}
             showsCompass={false}
             showsUserLocation={true}
+            followsUserLocation={true}
+            showsBuildings={false}
+            zoomControlEnabled={false}
+            zoomEnabled={false}
+            showsMyLocationButton={false}
             mapType={"standard"}
+            scrollEnabled={false}
             
           />
         </View>
