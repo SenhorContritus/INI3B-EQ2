@@ -1,20 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Alarm from "../Classes/Alarm";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
 import MapView from "react-native-maps";
 import { Marker } from "react-native-maps";
+import AlarmProps from "../Classes/AlarmProps";
 
 type AlarmProp = {
     id: number,
     data: Alarm,
-    x: number,
-    y: number,
+    x: number | 10,
+    y: number | 10,
     handleDeletePress: any,
     handleEditPress:any
 }
 
+
+
+
 export default function CompAlarm(props: AlarmProp){
+
+    const [distance,setDistance] = useState("")
+    const [time, setTime] = useState("")
+
+    const calcDistMatrix = async () => {
+        try{
+            const response = await fetch(`https://api.distancematrix.ai/maps/api/distancematrix/json?origins=${props.x},${props.y}&destinations=${props.data.coords.x},${props.data.coords.y}&key=${process.env.EXPO_PUBLIC_DISTANCEMATRIX_API_KEY}`)
+            if(!response.ok){
+                throw new Error("[API FETCH]: ERROR")
+            }else{
+                const body = await response.json()
+                if(body == ""){
+                    throw new Error("[API RESPONSE]: EMPTY RESPONSE")
+                }
+                else{
+                    const values =  [body.rows[0] , body.rows[0]]
+                    setDistance(values[0])
+                    setTime(values[1])
+                    return console.log(body.rows[0].elements[0]);
+                }
+                
+            }
+
+        }catch(e){
+            return window.alert(e)
+        }
+    }
+
+
+    useEffect(()=>{
+        calcDistMatrix()
+    }, [props.x])
     return(
         <View style={styles.container}>
             
@@ -63,7 +99,9 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{`X:${props.data.coords.x}\nY:${props.data.coords.y}
+                <Text style={styles.infoText}>{`
+                    ${distance}\n
+                    ${time}
                 `}
                 </Text>
             </View>

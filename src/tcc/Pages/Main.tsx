@@ -59,11 +59,15 @@ export const Main = ({ route , navigation}) => {
       }
   }
 
+  //verifica se vai criar um alarme novo ou não
+
   const verifyNewAlarm = () =>{
+    //Create
     if(route.params?.alarm && route.params.edit == false ){
       return setAlarm([...alarms, route.params.alarm])
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
+    //Update
     if(route.params?.alarm && route.params?.edit == true){
       console.log(route.params.alarm.id)
       return alarms.splice(((route.params.alarm.id) - 1), 1, route.params.alarm)
@@ -132,15 +136,17 @@ export const Main = ({ route , navigation}) => {
   const weatherString = `${weekday} - ${emoji}`;
   const dayString = `${day}/${month}`;
 
+  //Armazenamento de alarmes (as funções sqlite serão colocadas aqui)
+  //Vai pra tela de modificação e passa o alarme como parâmetro
   const modifyAlarm = (data: Alarm) => {
     return navigation.navigate("ConfigurarAlarme", {alarm: data})
   }
-
+  //Delete
   const deleteAlarm = (id:number) =>{
     const newList = alarms.filter(a => a.id != id)
     return setAlarm(newList)
   }
-
+  //Select ALl
   const showAlarm = () => {
     const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
     return data

@@ -34,7 +34,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
     try {
       const find = await fetch(`https://geocode.maps.co/search?q=${address}&api_key=${process.env.EXPO_PUBLIC_GEOLOC_API_KEY}`)
       if(!find.ok){
-        throw new Error("[API FETCH]:NOGGERS ERROR");
+        throw new Error("[API FETCH]:ERROR");
       }else{
         const response = await find.json()
         if(response != ''){
@@ -42,7 +42,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           return setCoords(latlong)
         }
         else{
-          throw new Error("Empty promisse");
+          throw new Error("[API RESPONSE]:EMPTY RESPONSE");
         }
         
       }
@@ -63,6 +63,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   //é chamado quando nenhum alarme foi enviado por parâmetro 
   const createAlarm = () => {
     console.log("Create")
+    findLocation()
     const id = route.params.listLenght
     let nomeIf = nome
     if(nomeIf === ""){
@@ -73,6 +74,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
     console.log("save")
+    findLocation()
     if(Alarme){
       let nomeIf = nome
       if(nomeIf === ""){
@@ -143,7 +145,6 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           placeholderTextColor="#ccc"
           value={address}
           onChangeText={setAddress}
-          onSubmitEditing={findLocation}
         />
 
         {/* Som do alarme */}
