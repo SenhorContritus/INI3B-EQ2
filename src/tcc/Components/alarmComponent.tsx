@@ -3,12 +3,13 @@ import Alarm from "../Classes/Alarm";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
 import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
 
 type AlarmProp = {
     id: number,
     data: Alarm,
-    x?: number,
-    y?: number,
+    x: number,
+    y: number,
     handleDeletePress: any,
     handleEditPress:any
 }
@@ -16,17 +17,45 @@ type AlarmProp = {
 export default function CompAlarm(props: AlarmProp){
     return(
         <View style={styles.container}>
-            <View style={styles.mapView}>
-                <MapView 
-                    region={{
-                        latitude:  0,
-                        longitude: 0,
-                        latitudeDelta: 0.09,
-                        longitudeDelta: 0.09
-                    }}
-                    showsUserLocation={true}
-                />
-            </View>
+            
+            <MapView 
+            style={styles.mapView}
+            region={{
+                latitude: Number(props.data.coords.x),
+                longitude:Number(props.data.coords.y),
+                latitudeDelta: 0.09,
+                longitudeDelta: 0.09
+            }}
+            
+            camera={{
+              center:{
+                latitude: Number(props.data.coords.x),
+                longitude:Number(props.data.coords.y)
+              },
+              zoom: 15,
+              heading: 10,
+              altitude: 1000,
+              pitch: 0
+              
+            }}
+            showsCompass={false}
+            showsUserLocation={true}
+            followsUserLocation={true}
+            showsBuildings={false}
+            zoomControlEnabled={false}
+            zoomEnabled={false}
+            showsMyLocationButton={false}
+            mapType={"standard"}
+            scrollEnabled={false}
+            
+          >
+            <Marker
+                coordinate={{
+                    latitude: Number(props.data.coords.x),
+                    longitude:Number(props.data.coords.y)
+                }}
+            />
+          </MapView>
             <View style={styles.infoView}>
                 <Text style={styles.titleText}>
                     {props.data.name}

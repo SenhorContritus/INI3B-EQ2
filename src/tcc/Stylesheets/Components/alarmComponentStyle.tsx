@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     },
     mapView:{
         flex: 0.35,
-        backgroundColor: "gray",
         borderRadius: 20
     },
     infoView:{

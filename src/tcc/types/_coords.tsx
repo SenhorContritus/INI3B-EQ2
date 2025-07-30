@@ -1,6 +1,6 @@
 type _coords = {
-    x?: number,
-    y?:  number
+    x: number,
+    y:  number
 }
 
 export default _coords
