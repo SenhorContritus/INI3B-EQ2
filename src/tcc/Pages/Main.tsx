@@ -148,7 +148,7 @@ export const Main = ({ route , navigation}) => {
   }
   //Select ALl
   const showAlarm = () => {
-    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} />)
+    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} navigation={navigation}/>)
     return data
   }
 

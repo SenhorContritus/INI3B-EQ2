@@ -9,10 +9,11 @@ import AlarmProps from "../Classes/AlarmProps";
 type AlarmProp = {
     id: number,
     data: Alarm,
-    x: number | 10,
-    y: number | 10,
+    x: number,
+    y: number,
     handleDeletePress: any,
-    handleEditPress:any
+    handleEditPress:any,
+    navigation: any
 }
 
 
@@ -22,6 +23,11 @@ export default function CompAlarm(props: AlarmProp){
 
     const [distance,setDistance] = useState("")
     const [time, setTime] = useState("")
+    const verifyAlarm = () => {
+        if(Number(distance.split(" ")[0]) <= 0.1){
+            props.navigation.navigate("TocarAlarme")
+        }
+    }
 
     const calcDistMatrix = async () => {
         try{
@@ -34,10 +40,10 @@ export default function CompAlarm(props: AlarmProp){
                     throw new Error("[API RESPONSE]: EMPTY RESPONSE")
                 }
                 else{
-                    const values =  [body.rows[0] , body.rows[0]]
+                    const values =  [body.rows[0].elements[0].distance.text ,body.rows[0].elements[0].duration.text]
                     setDistance(values[0])
                     setTime(values[1])
-                    return console.log(body.rows[0].elements[0]);
+                    
                 }
                 
             }
@@ -50,7 +56,7 @@ export default function CompAlarm(props: AlarmProp){
 
     useEffect(()=>{
         calcDistMatrix()
-    }, [props.x])
+    },[])
     return(
         <View style={styles.container}>
             
@@ -99,10 +105,7 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{`
-                    ${distance}\n
-                    ${time}
-                `}
+                <Text style={styles.infoText}>{`${distance}\n${time}`}
                 </Text>
             </View>
             <View style={styles.optionsView}>

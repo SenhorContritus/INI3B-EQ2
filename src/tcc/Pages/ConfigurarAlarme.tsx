@@ -145,6 +145,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
           placeholderTextColor="#ccc"
           value={address}
           onChangeText={setAddress}
+          onSubmitEditing={findLocation}
         />
 
         {/* Som do alarme */}
