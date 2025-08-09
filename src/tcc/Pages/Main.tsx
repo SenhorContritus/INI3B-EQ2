@@ -95,7 +95,7 @@ export const Main = ({ route , navigation}) => {
       }
     }
     getCoords()
-  },[])
+  },[location])
 
   useEffect(() => {
     async function fetchWeather() {
@@ -148,9 +148,10 @@ export const Main = ({ route , navigation}) => {
   }
   //Select ALl
   const showAlarm = () => {
-    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} navigation={navigation}/>)
+    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} navigation={navigation} location={location}/>)
     return data
   }
+
 
 
   return (
@@ -178,7 +179,7 @@ export const Main = ({ route , navigation}) => {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude
               },
-              zoom: 18,
+              zoom: 17,
               heading: location.coords.heading == null? 0 : location.coords.heading,
               altitude: 1000,
               pitch: 0

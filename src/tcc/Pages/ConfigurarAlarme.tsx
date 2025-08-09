@@ -5,10 +5,11 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
 import AlarmProps from "../Classes/AlarmProps";
-import Geocoder from "react-native-geocoding";
 import _coords from "../types/_coords";
+import Geocoder from "react-native-geocoding";
 
-Geocoder.init("AIzaSyDiy5Bw6J8_7DBLJ0CWUfeUZUFuoTHGqMs")
+Geocoder.init(process.env.EXPO_PUBLIC_GOOGLE_API_KEY)
+
 
 const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
@@ -32,13 +33,13 @@ export const ConfigurarAlarme = ({route, navigation}) => {
 
   const findLocation = async () => {
     try {
-      const find = await fetch(`https://geocode.maps.co/search?q=${address}&api_key=${process.env.EXPO_PUBLIC_GEOLOC_API_KEY}`)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_API_KEY}`)
       if(!find.ok){
         throw new Error("[API FETCH]:ERROR");
       }else{
         const response = await find.json()
         if(response != ''){
-          const latlong:_coords = {x:response[0].lat, y:response[0].lon}
+          const latlong:_coords = {x:response.features[0].properties.coordinates.latitude, y:response.features[0].properties.coordinates.longitude}
           return setCoords(latlong)
         }
         else{

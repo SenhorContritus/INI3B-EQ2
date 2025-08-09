@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Alarm from "../Classes/Alarm";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
 import MapView from "react-native-maps";
 import { Marker } from "react-native-maps";
@@ -11,6 +11,7 @@ type AlarmProp = {
     data: Alarm,
     x: number,
     y: number,
+    location: any,
     handleDeletePress: any,
     handleEditPress:any,
     navigation: any
@@ -24,9 +25,7 @@ export default function CompAlarm(props: AlarmProp){
     const [distance,setDistance] = useState("")
     const [time, setTime] = useState("")
     const verifyAlarm = () => {
-        if(Number(distance.split(" ")[0]) <= 0.1){
-            props.navigation.navigate("TocarAlarme")
-        }
+        console.log(distance.split(" ")[0])
     }
 
     const calcDistMatrix = async () => {
@@ -36,16 +35,15 @@ export default function CompAlarm(props: AlarmProp){
                 throw new Error("[API FETCH]: ERROR")
             }else{
                 const body = await response.json()
-                if(body == ""){
+                if(body == " "){
                     throw new Error("[API RESPONSE]: EMPTY RESPONSE")
                 }
                 else{
-                    const values =  [body.rows[0].elements[0].distance.text ,body.rows[0].elements[0].duration.text]
+                    const values =  await [body.rows[0].elements[0].distance.text ,body.rows[0].elements[0].duration.text]
                     setDistance(values[0])
                     setTime(values[1])
-                    
+                    return console.log(values)
                 }
-                
             }
 
         }catch(e){
@@ -60,44 +58,11 @@ export default function CompAlarm(props: AlarmProp){
     return(
         <View style={styles.container}>
             
-            <MapView 
-            style={styles.mapView}
-            region={{
-                latitude: Number(props.data.coords.x),
-                longitude:Number(props.data.coords.y),
-                latitudeDelta: 0.09,
-                longitudeDelta: 0.09
-            }}
-            
-            camera={{
-              center:{
-                latitude: Number(props.data.coords.x),
-                longitude:Number(props.data.coords.y)
-              },
-              zoom: 15,
-              heading: 10,
-              altitude: 1000,
-              pitch: 0
-              
-            }}
-            showsCompass={false}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            showsBuildings={false}
-            zoomControlEnabled={false}
-            zoomEnabled={false}
-            showsMyLocationButton={false}
-            mapType={"standard"}
-            scrollEnabled={false}
-            
-          >
-            <Marker
-                coordinate={{
-                    latitude: Number(props.data.coords.x),
-                    longitude:Number(props.data.coords.y)
-                }}
+            <Image 
+                style={styles.mapView}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=AIzaSyD1r_FHCfK3hcsFg33ZH--QdIXeY6Pviqo`}
             />
-          </MapView>
+            
             <View style={styles.infoView}>
                 <Text style={styles.titleText}>
                     {props.data.name}
