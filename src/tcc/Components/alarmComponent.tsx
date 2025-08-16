@@ -22,9 +22,13 @@ type AlarmProp = {
 
 export default function CompAlarm(props: AlarmProp){
 
+    const nav = props.navigation
+
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
     const verifyAlarm = () => {
-        
+        if(Number(locInfo?.distance) <= 2){
+            nav.navigate("TocarAlarme")
+        }
     }
 
     const calcDistMatrix = async () => {
