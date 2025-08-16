@@ -22,16 +22,15 @@ type AlarmProp = {
 
 export default function CompAlarm(props: AlarmProp){
 
-    const [distance,setDistance] = useState("")
-    const [time, setTime] = useState("")
+    const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
     const verifyAlarm = () => {
-        console.log(distance.split(" ")[0])
+        
     }
 
     const calcDistMatrix = async () => {
         verifyAlarm()
         try{
-            const response = await fetch(`https://api.distancematrix.ai/maps/api/distancematrix/json?origins=${props.x},${props.y}&destinations=${props.data.coords.x},${props.data.coords.y}&key=${process.env.EXPO_PUBLIC_DISTANCEMATRIX_API_KEY}`)
+            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.coords.y},${props.data.coords.x}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_API_KEY}`)
             if(!response.ok){
                 throw new Error("[API FETCH]: ERROR")
             }else{
@@ -40,10 +39,10 @@ export default function CompAlarm(props: AlarmProp){
                     throw new Error("[API RESPONSE]: EMPTY RESPONSE")
                 }
                 else{
-                    const values =  await [body.rows[0].elements[0].distance.text ,body.rows[0].elements[0].duration.text]
-                    setDistance(values[0])
-                    setTime(values[1])
-                    return console.log(values)
+                    const distance = (body.distances[0][1]/1000).toFixed(1)
+                    const duration = (body.durations[0][1]/60).toFixed(0)
+                    console.log("puxou")
+                    return setLocInfo({duration: duration, distance: distance})
                 }
             }
 
@@ -55,13 +54,13 @@ export default function CompAlarm(props: AlarmProp){
 
     useEffect(()=>{
         calcDistMatrix()
-    },[])
+    },[props.data.address])
     return(
         <View style={styles.container}>
             
             <Image 
                 style={styles.mapView}
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=AIzaSyD1r_FHCfK3hcsFg33ZH--QdIXeY6Pviqo`}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`}
             />
             
             <View style={styles.infoView}>
@@ -71,7 +70,7 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{`${distance}\n${time}`}
+                <Text style={styles.infoText}>{`${locInfo?.distance}km\n${locInfo?.duration}min`}
                 </Text>
             </View>
             <View style={styles.optionsView}>
