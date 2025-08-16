@@ -29,6 +29,7 @@ export default function CompAlarm(props: AlarmProp){
     }
 
     const calcDistMatrix = async () => {
+        verifyAlarm()
         try{
             const response = await fetch(`https://api.distancematrix.ai/maps/api/distancematrix/json?origins=${props.x},${props.y}&destinations=${props.data.coords.x},${props.data.coords.y}&key=${process.env.EXPO_PUBLIC_DISTANCEMATRIX_API_KEY}`)
             if(!response.ok){
