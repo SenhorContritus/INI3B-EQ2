@@ -32,7 +32,7 @@ const WEATHER_EMOJIS: { [key: string]: string } = {
   Tornado: "🌪️",
 };
 
-export const Main = ({ route , navigation}) => {
+export const Main = ({ route , navigation} : any) => {
 
   // Tipando a navegação
   

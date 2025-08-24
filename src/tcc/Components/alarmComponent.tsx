@@ -26,15 +26,15 @@ export default function CompAlarm(props: AlarmProp){
 
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
     const verifyAlarm = () => {
-        if(Number(locInfo?.distance) <= 2){
-            nav.navigate("TocarAlarme")
+        if(Number(locInfo?.distance) <= 0.2 && props.data.alarmProps?.active){
+            nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
         }
     }
 
     const calcDistMatrix = async () => {
         verifyAlarm()
         try{
-            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.coords.y},${props.data.coords.x}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_API_KEY}`)
+            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.coords.y},${props.data.coords.x}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
             if(!response.ok){
                 throw new Error("[API FETCH]: ERROR")
             }else{
@@ -58,13 +58,16 @@ export default function CompAlarm(props: AlarmProp){
 
     useEffect(()=>{
         calcDistMatrix()
-    },[props.data.address])
+        console.log("rodou o trem")
+    },[props.x])
     return(
         <View style={styles.container}>
             
             <Image 
                 style={styles.mapView}
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`}
+                source={{
+                    uri:`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`
+                }}
             />
             
             <View style={styles.infoView}>
