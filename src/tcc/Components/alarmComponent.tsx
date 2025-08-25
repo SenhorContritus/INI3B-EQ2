@@ -58,13 +58,13 @@ export default function CompAlarm(props: AlarmProp){
 
 
     useEffect(()=>{
-        if(props.data.alarmProps?.active){
-            calcDistMatrix()
-        }
+            if(props.data.alarmProps?.active){
+                calcDistMatrix()
+            }
+        
     },[props.x])
     return(
         <View style={styles.container}>
-            
             <Image 
                 style={styles.mapView}
                 src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}

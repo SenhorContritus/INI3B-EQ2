@@ -149,24 +149,6 @@ export default function Main({ navigation , route }: any) {
         </View>
         <AnimatedButton
           style={[
-            styles.snoozeButton,
-            {
-              width: "80%",
-              minWidth: 180,
-              maxWidth: 350,
-              height: h(40),
-              borderRadius: w(20),
-              marginBottom: h(10),
-            },
-          ]}
-          onPress={() => { /* lógica de adiar */ }}
-        >
-          <Text style={[styles.snoozeButtonText, { fontSize: Math.max(w(14), 13) }]}>
-            Adiar por 5min
-          </Text>
-        </AnimatedButton>
-        <AnimatedButton
-          style={[
             styles.offButton,
             {
               width: "80%",
