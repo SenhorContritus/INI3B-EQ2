@@ -2,7 +2,7 @@ import _prostponeProps from "../types/_prostponeProps";
 import Alarm from "./Alarm";
 
 class AlarmProps{
-    private _Id: number;
+    private _Id: number ;
     private _active: boolean;
     private _daysActive: boolean[];
     private _sound: boolean;

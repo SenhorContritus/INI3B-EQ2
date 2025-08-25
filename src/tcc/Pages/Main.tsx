@@ -10,7 +10,7 @@ import MapView from "react-native-maps";
 import * as SQLite from "expo-sqlite"
 import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
-
+import AlarmProps from "../Classes/AlarmProps";
 
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
@@ -137,6 +137,25 @@ export const Main = ({ route , navigation} : any) => {
   const dayString = `${day}/${month}`;
 
   //Armazenamento de alarmes (as funções sqlite serão colocadas aqui)
+
+  const activeAlarm = (data: Alarm, active: boolean) =>{
+  return (
+    data.alarmProps && data?
+        alarms.splice(
+          ((data.id) - 1),
+          1,
+          new Alarm(
+            data.id,
+            data.name, 
+            {x: data.coords.x ,y: data.coords.y}, 
+            data.address,
+            new AlarmProps(data.alarmProps.id, active, data.alarmProps.daysActive, data.alarmProps.sound, "",data.alarmProps.vibration,"",data.alarmProps.prostpone,{times: 0, timeWait:0 }, 10 )
+          )
+        ):
+        window.alert("[ERROR]: ALARM PROPS IS NULL")
+  )
+  }
+
   //Vai pra tela de modificação e passa o alarme como parâmetro
   const modifyAlarm = (data: Alarm) => {
     return navigation.navigate("ConfigurarAlarme", {alarm: data})
@@ -148,7 +167,7 @@ export const Main = ({ route , navigation} : any) => {
   }
   //Select ALl
   const showAlarm = () => {
-    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} navigation={navigation} location={location}/>)
+    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} handleActivePress={activeAlarm} navigation={navigation} location={location}/>)
     return data
   }
 

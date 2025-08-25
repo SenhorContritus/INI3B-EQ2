@@ -25,15 +25,31 @@ export const styles = StyleSheet.create({
         color: "gray",
         
     },
-    optionsView:{   
+    optionsContainer:{   
         flex: 0.30,
-        flexDirection:"row",
-        alignItems: "flex-end"
+        flexDirection:"column"
+
+    },
+    activeView:{
+        flex: 0.70,
+        justifyContent:"center",
+        alignItems: "center",
+    },
+    activeButton:{
+        flex: 0.3,
+        width: 27,
+        borderRadius: 100
+    },
+
+    optionsView:{
+        flex: 0.30,
+        flexDirection: "row"
+
     },
     btEdit:{
         flex: 0.6,
         backgroundColor: "white",
-        borderRadius: 20,
+        borderRadius: 10,
         height: 30,
         textAlign:"center",
         alignItems:"center",
@@ -44,7 +60,7 @@ export const styles = StyleSheet.create({
     btDelete:{
         flex: 0.3,
         backgroundColor: "white",
-        borderRadius: 20,
+        borderRadius: 10,
         textAlign:"center",
         alignItems:"center",
         justifyContent: "center",
