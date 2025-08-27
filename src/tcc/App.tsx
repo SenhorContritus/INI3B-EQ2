@@ -33,7 +33,15 @@ export default function App(){
           listLenght:0,
         }} 
       />
-      <Stack.Screen name="TocarAlarme" component={TocarAlarme} />
+      <Stack.Screen 
+      name="TocarAlarme" 
+      component={TocarAlarme}
+      initialParams={{
+        Alarm: undefined,
+        Id: undefined
+      }}
+
+      />
     </Stack.Navigator>
   </NavigationContainer>
 };

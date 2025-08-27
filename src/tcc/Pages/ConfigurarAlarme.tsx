@@ -6,21 +6,17 @@ import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
 import AlarmProps from "../Classes/AlarmProps";
 import _coords from "../types/_coords";
-import Geocoder from "react-native-geocoding";
-
-Geocoder.init(process.env.EXPO_PUBLIC_GOOGLE_API_KEY)
-
 
 const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
 const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
 
-export const ConfigurarAlarme = ({route, navigation}) => {
+export const ConfigurarAlarme = ({route, navigation} : any) => {
 
   const props = route.params
   const [Alarme, setAlarme] = useState<Alarm | undefined>();  
   const [nome, setNome] = useState("");
-  const [ativo, setAtivo] = useState(Boolean)
+  const [ativo, setAtivo] = useState(true)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
@@ -33,9 +29,9 @@ export const ConfigurarAlarme = ({route, navigation}) => {
 
   const findLocation = async () => {
     try {
-      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_API_KEY}`)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
       if(!find.ok){
-        throw new Error("[API FETCH]:ERROR");
+        throw new Error("[API FETCH]:" + find.json());
       }else{
         const response = await find.json()
         if(response != ''){
@@ -91,6 +87,7 @@ export const ConfigurarAlarme = ({route, navigation}) => {
       setAlarme(props?.alarm)
       setNome(alarme.name)
       setAddress(alarme.address)
+      setCoords(alarme.coords)
       setDiasSelecionados(alarme.alarmProps.daysActive)
       setSomAtivo(alarme.alarmProps.sound)
       setVibracaoAtiva(alarme.alarmProps.vibration)

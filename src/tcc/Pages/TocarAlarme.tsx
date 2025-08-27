@@ -1,7 +1,9 @@
 import React = require("react");
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated, Button } from "react-native";
-
+import Alarm from "../Classes/Alarm";
+import _coords from "../types/_coords";
+import AlarmProps from "../Classes/AlarmProps";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const w = (value: number) => (value / 440) * SCREEN_WIDTH;
@@ -43,8 +45,29 @@ function AnimatedButton({ style, onPress, children }: any) {
   );
 }
 
-export default function Main({ navigation }: any) {
-  const [time, setTime] = useState(new Date());
+export default function Main({ navigation , route }: any) {
+  const [time, setTime] = useState(new Date()); 
+  const [nome, setNome] = useState("");
+  const [ativo, setAtivo] = useState(true)
+  const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
+  const [somAtivo, setSomAtivo] = useState(true);
+  const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
+  const [adiarAtivo, setAdiarAtivo] = useState(false);
+  const [coords, setCoords] = useState<_coords>({x:0 , y:0})
+  const [address, setAddress] = useState("")
+
+  useEffect(() => {
+    if(alarm){
+      setNome(alarm.name)
+      setAddress(alarm.address)
+      setDiasSelecionados(alarm.alarmProps.daysActive)
+      setSomAtivo(alarm.alarmProps.sound)
+      setVibracaoAtiva(alarm.alarmProps.vibration)
+      setAdiarAtivo(alarm.alarmProps.prostpone)
+      setCoords(alarm.coords)
+    }
+  })
+
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -55,6 +78,9 @@ export default function Main({ navigation }: any) {
   const grayCircleSize = SCREEN_WIDTH * 1.25;
   const blackCircleSize = SCREEN_WIDTH * 0.95;
   const centerY = SCREEN_HEIGHT / 2;
+
+  const alarm = route.params.Alarm
+  const id = route.params.Id
 
   return (
     <View style={styles.root}>
@@ -123,24 +149,6 @@ export default function Main({ navigation }: any) {
         </View>
         <AnimatedButton
           style={[
-            styles.snoozeButton,
-            {
-              width: "80%",
-              minWidth: 180,
-              maxWidth: 350,
-              height: h(40),
-              borderRadius: w(20),
-              marginBottom: h(10),
-            },
-          ]}
-          onPress={() => { /* lógica de adiar */ }}
-        >
-          <Text style={[styles.snoozeButtonText, { fontSize: Math.max(w(14), 13) }]}>
-            Adiar por 5min
-          </Text>
-        </AnimatedButton>
-        <AnimatedButton
-          style={[
             styles.offButton,
             {
               width: "80%",
@@ -150,7 +158,8 @@ export default function Main({ navigation }: any) {
               borderRadius: w(20),
             },
           ]}
-          onPress={() => navigation.navigate("Main")}
+          onPress={() => navigation.popTo("Main", {alarm: new Alarm(id, nome, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, false,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
+}
         >
           <Text style={[styles.offButtonText, { fontSize: Math.max(w(14), 13) }]}>
             Desligar
