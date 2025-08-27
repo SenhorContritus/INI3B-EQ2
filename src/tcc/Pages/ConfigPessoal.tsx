@@ -17,7 +17,7 @@ export const ConfigPessoal = () => {
   const [temaEscuro, setTemaEscuro] = useState(false);
   const [idioma, setIdioma] = useState(i18n.language || deviceLang);
   const [textoCaixa, setTextoCaixa] = useState('');
-  const { insertAlarCOnfigm } = useconfig();
+  const { insertAlarmConfig } = useconfig();
 
   React.useEffect(() => {
     i18n.changeLanguage(idioma);
@@ -129,7 +129,7 @@ export const ConfigPessoal = () => {
   style={estilos.botao}
   onPress={() => {
     const tema = temaEscuro ? 'escuro' : 'claro';
-    insertAlarCOnfigm( 1, temaEscuro, idioma );
+    insertAlarmConfig( 1, temaEscuro, idioma );
   }}
 >
   <Text style={estilos.textoBotao}>Salvar Configuração</Text>

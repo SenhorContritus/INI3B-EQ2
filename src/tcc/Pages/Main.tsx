@@ -11,6 +11,7 @@ import * as SQLite from "expo-sqlite"
 import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
 import AlarmProps from "../Classes/AlarmProps";
+import useAlarms from "../Hooks/useAlarmTable";
 
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];

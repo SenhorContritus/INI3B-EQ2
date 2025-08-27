@@ -33,7 +33,7 @@ const useAlarms = () => {
         }
     };
 
- const insertAlarCOnfigm = async (Id=1, StyleTheme: string|any, Language: string|any) => {
+ const insertAlarmConfig = async (Id=1, StyleTheme: string|any, Language: string|any) => {
     try {
         await db.runAsync(
             'INSERT INTO GeneralConfig (id, StyleTheme, Language) VALUES (?, ?, ?)',
@@ -61,6 +61,6 @@ const useAlarms = () => {
     }
 }
 
-      return { insertAlarCOnfigm, UpdateConfig, fetchAlarms, data }
+      return { insertAlarmConfig, UpdateConfig, fetchAlarms, data }
 };
 export default useAlarms;

@@ -46,7 +46,7 @@ const useAlarms = () => {
         console.error('Erro ao inserir o alarme', error);
     }
 }
-const UpdatetAlarm = async (Id:number, StyleTheme: string, Language: string, FusoHorario: string) => {
+const UpdateAlarm = async (Id:number, StyleTheme: string, Language: string, FusoHorario: string) => {
     try {
         await db.execAsync(`
             CREATE TABLE IF NOT EXISTS GeneralConfig (
