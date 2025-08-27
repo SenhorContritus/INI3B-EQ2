@@ -6,10 +6,6 @@ import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
 import AlarmProps from "../Classes/AlarmProps";
 import _coords from "../types/_coords";
-import Geocoder from "react-native-geocoding";
-
-Geocoder.init(process.env.EXPO_PUBLIC_GOOGLE_API_KEY)
-
 
 const db = SQLite.openDatabaseSync("AlarmsDatabase.sqlite")
 
