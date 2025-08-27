@@ -32,7 +32,7 @@ export default function CompAlarm(props: AlarmProp){
     }
 
     const calcDistMatrix = async () => {
-        verifyAlarm()
+        
         try{
             const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.coords.y},${props.data.coords.x}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_API_KEY}`)
             if(!response.ok){
@@ -45,8 +45,8 @@ export default function CompAlarm(props: AlarmProp){
                 else{
                     const distance = (body.distances[0][1]/1000).toFixed(1)
                     const duration = (body.durations[0][1]/60).toFixed(0)
-                    console.log("puxou")
-                    return setLocInfo({duration: duration, distance: distance})
+                    setLocInfo({duration: duration, distance: distance})
+                    return verifyAlarm()
                 }
             }
 
