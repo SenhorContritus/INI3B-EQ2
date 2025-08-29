@@ -19,7 +19,7 @@ const useAlarms = () => {
                 StyleTheme VARCHAR NOT NULL,
                 Language VARCHAR NOT NULL)`
             );
-            console.log('Tabela criada');
+            console.log('Tabela config criada');
         } catch (error) {
             console.error('Erro', error);
         }

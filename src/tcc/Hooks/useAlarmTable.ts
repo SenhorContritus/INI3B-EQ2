@@ -7,11 +7,7 @@ const db = SQLite.openDatabaseSync('database.db');
 const useAlarms = () => {
     const [data, setData] = useState<any[]>([]);
 
-    useEffect(() => {
-        initializeDatabase();
-    }, []);
-
-    const initializeDatabase = async () => {
+    const initializeTableDB = async () => {
         try {   
             await db.execAsync(
                 `CREATE TABLE IF NOT EXISTS alarm (
@@ -21,12 +17,12 @@ const useAlarms = () => {
                 longitude REAL NOT NULL,
                 address VARCHAR)`
             );
-            console.log('Tabela criada');
+            console.log('Tabela alarms criada');
         } catch (error) {
             console.error('Erro', error);
         }
     };
-    const fetchAlarms = async () => {
+    const fetchAlarmDB = async () => {
         try {
             const rows = await db.getAllAsync('SELECT * FROM alarm;');
             setData(rows);
@@ -35,32 +31,35 @@ const useAlarms = () => {
         }
     };
 
- const insertAlarm = async (name: string, latitude: number, longitude: number, address: string) => {
-    try {
-        await db.runAsync(
-            'INSERT INTO alarm (name, latitude, longitude, address) VALUES (?, ?, ?, ?)',
-            [name, latitude, longitude, address]
-        );
-        console.log('Alarme inserido com sucesso');
-    } catch (error) {
-        console.error('Erro ao inserir o alarme', error);
+    const insertAlarmDB = async (name: string, latitude: number, longitude: number, address: string) => {
+        try {
+            await db.runAsync(
+                'INSERT INTO alarm (name, latitude, longitude, address) VALUES (?, ?, ?, ?)',
+                [name, latitude, longitude, address]
+            );
+            console.log('Alarme inserido com sucesso');
+        } catch (error) {
+            console.error('Erro ao inserir o alarme', error);
+        }
     }
-}
-const UpdateAlarm = async (Id:number, StyleTheme: string, Language: string, FusoHorario: string) => {
-    try {
-        await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS GeneralConfig (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                StyleTheme VARCHAR NOT NULL,
-                Language VARCHAR NOT NULL,
-                FusoHorario VARCHAR NOT NULL
-            )
-        `);
-        console.log('Configurações alteradas com sucesso');
-    } catch (error) {
-        console.error('Erro ao Alterar as configurações gerais', error);
+    const updateAlarmDB = async (alarm_id:number, name: string, latitude: number, longitude: number, address: string) => {
+        try {
+            await db.runAsync(`
+                UPDATE alarm (name, latitude, longitude, address) = (?,?,?,?) WHERE id = ?
+            `,[name,latitude,longitude,address, alarm_id])
+            console.log('Configurações alteradas com sucesso');
+        } catch (error) {
+            console.error('Erro ao Alterar as configurações gerais', error);
+        }
     }
-}
-      
+    const deleteAlarmDB = async (alarm_id: number) =>  {
+        try {
+            await db.runAsync("DELETE * FROM alarm WHERE id = ?", [alarm_id])
+            console.log("[ALARM]: Dados deletados com sucesso")
+        } catch (error) {
+            console.log("[ALARM]: Não foi possivel deletar os valores")
+        }
+    }
+    return {initializeTableDB, fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB, data}
 };
 export default useAlarms;

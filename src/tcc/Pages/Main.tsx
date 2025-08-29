@@ -11,7 +11,8 @@ import * as SQLite from "expo-sqlite"
 import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
 import AlarmProps from "../Classes/AlarmProps";
-import useAlarms from "../Hooks/useAlarmTable";
+import useAlarm from "../Hooks/useAlarmTable";
+import useAlarmProps from "../Hooks/useAlarmPropsTable";
 
 
 const WEEKDAYS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
@@ -45,13 +46,33 @@ export const Main = ({ route , navigation} : any) => {
   const [time, setTime] = useState(new Date());
   const [location, setLocation] = useState<Location.LocationObject>({coords: {latitude:0, longitude:0, accuracy:0, altitude:0, altitudeAccuracy:0, heading:0, speed:0}, timestamp:0,mocked: false});
   const [weather, setWeather] = useState<string>("");
-  const [alarms, setAlarm] = useState<Alarm[]>([])
+  const [alarms, setAlarm] = useState<any[]>([])
   const [geoPermissionGranted, setGeoPermissionGranted] = useState<Location.PermissionStatus>()
 
   // Responsividade para fontes e botões
   const baseFont = Math.max(15, Math.round(windowWidth * 0.03));
   const buttonFont = Math.max(15, Math.round(windowWidth * 0.035));
   const settingsIconSize = Math.max(24, Math.round(windowWidth * 0.05));
+
+  //os babiba dos dias
+
+  const weekday = WEEKDAYS[time.getDay()];
+  const day = String(time.getDate()).padStart(2, "0");
+  const month = String(time.getMonth() + 1).padStart(2, "0");
+  const emoji = WEATHER_EMOJIS[weather] || "☀️";
+  const weatherString = `${weekday} - ${emoji}`;
+  const dayString = `${day}/${month}`;
+
+  //banco de dados
+  const {initializeTableDB,fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB,data} = useAlarm()
+  const {initializeTablePropsDB, fetchAlarmPropsDB,insertAlarmPropsDB, updateAlarmPropsDB,deleteAlarmPropsDB, dataProps} = useAlarmProps()
+
+  useEffect(() => {
+    initializeTableDB()
+    initializeTablePropsDB()
+  },[])
+
+
 
   async function getGeoPermission() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -63,15 +84,29 @@ export const Main = ({ route , navigation} : any) => {
   //verifica se vai criar um alarme novo ou não
 
   const verifyNewAlarm = () =>{
+    const alarmRes = route.params?.alarm
     //Create
-    if(route.params?.alarm && route.params.edit == false ){
-      return setAlarm([...alarms, route.params.alarm])
+    if(alarmRes && route.params.edit == false ){
+        console.log("aaaa")
+        insertAlarmDB(alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
+        insertAlarmPropsDB(
+          alarmRes.id, 
+          alarmRes.alarmProps.active, 
+          alarmRes.alarmProps.daysActive, 
+          alarmRes.alarmProps.sound,
+          alarmRes.alarmProps.soundUrl,
+          alarmRes.alarmProps.vibration,
+          alarmRes.alarmProps.vibrationType, 
+          alarmRes.alarmProps.prostpone, 
+          alarmRes.alarmProps.prostponeProps, 
+          alarmRes.alarmProps.volume)
+      
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
-    if(route.params?.alarm && route.params?.edit == true){
-      console.log(route.params.alarm.id)
-      return alarms.splice(((route.params.alarm.id) - 1), 1, route.params.alarm)
+    if(alarmRes && route.params?.edit == true){
+      console.log(alarmRes.id)
+      return alarms.splice(((alarmRes.id) - 1), 1, route.params.alarm)
     }
   }
 
@@ -130,12 +165,7 @@ export const Main = ({ route , navigation} : any) => {
 
 
 
-  const weekday = WEEKDAYS[time.getDay()];
-  const day = String(time.getDate()).padStart(2, "0");
-  const month = String(time.getMonth() + 1).padStart(2, "0");
-  const emoji = WEATHER_EMOJIS[weather] || "☀️";
-  const weatherString = `${weekday} - ${emoji}`;
-  const dayString = `${day}/${month}`;
+
 
   //Armazenamento de alarmes (as funções sqlite serão colocadas aqui)
 
@@ -168,8 +198,11 @@ export const Main = ({ route , navigation} : any) => {
   }
   //Select ALl
   const showAlarm = () => {
-    const data = alarms.map(a => <CompAlarm id={a.id} data={a} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} handleActivePress={activeAlarm} navigation={navigation} location={location}/>)
-    return data
+    const show = async () => {
+      fetchAlarmDB()
+      return <View>{data}</View>
+    }
+    return show()
   }
 
 
