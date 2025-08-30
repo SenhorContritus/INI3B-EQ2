@@ -84,14 +84,15 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   useEffect(() => {
     if(props.alarm){
       const alarme = props?.alarm
+      const alarmProps = props?.alarmProps
       setAlarme(props?.alarm)
       setNome(alarme.name)
       setAddress(alarme.address)
-      setCoords(alarme.coords)
-      setDiasSelecionados(alarme.alarmProps.daysActive)
-      setSomAtivo(alarme.alarmProps.sound)
-      setVibracaoAtiva(alarme.alarmProps.vibration)
-      setAdiarAtivo(alarme.alarmProps.prostpone)
+      setCoords({x: alarme.latitude, y: alarme.longitude})
+      setDiasSelecionados(alarmProps.daysActive)
+      setSomAtivo(alarmProps.sound)
+      setVibracaoAtiva(alarmProps.vibration)
+      setAdiarAtivo(alarmProps.prostpone)
 
     }
 

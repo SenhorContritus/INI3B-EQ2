@@ -30,6 +30,7 @@ export default function App(){
         component={ConfigurarAlarme}
         initialParams={{
           alarm: undefined,
+          alarmProps: undefined,
           listLenght:0,
         }} 
       />

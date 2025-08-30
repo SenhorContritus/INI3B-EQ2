@@ -8,7 +8,8 @@ import AlarmProps from "../Classes/AlarmProps";
 
 type AlarmProp = {
     id: number,
-    data: Alarm,
+    data: any,
+    dataProps:any,
     x: number,
     y: number,
     location: any,
@@ -35,7 +36,7 @@ export default function CompAlarm(props: AlarmProp){
     const calcDistMatrix = async () => {
         
         try{
-            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.coords.y},${props.data.coords.x}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
+            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.latitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
             if(!response.ok){
                 throw new Error("[API FETCH]:" + response)
             }else{
@@ -67,7 +68,7 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.coords.x}, ${props.data.coords.y}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.coords.x}, ${props.data.coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
+                src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.longitude}, ${props.data.latitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
             
             />
             
@@ -78,7 +79,7 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{props.data.alarmProps?.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
+                <Text style={styles.infoText}>{props.dataProps?.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
                 </Text>
             </View>
             <View style={styles.optionsContainer}>
@@ -89,11 +90,11 @@ export default function CompAlarm(props: AlarmProp){
                         props.data.alarmProps?.active?
                         {backgroundColor:"gray"}:{backgroundColor:"black"}
                         ]}
-                    onPress={() => props.handleActivePress(props.data , !props.data.alarmProps?.active)}
+                    onPress={() => props.handleActivePress(props.dataProps , !props.dataProps?.active)}
                     />
                 </View>
                 <View style={styles.optionsView}>
-                    <Pressable onPress={() => props.handleEditPress(props.data)} style={styles.btEdit}>
+                    <Pressable onPress={() => props.handleEditPress(props.data, props.dataProps)} style={styles.btEdit}>
                         <Text style={styles.btText}>
                             Editar
                         </Text>

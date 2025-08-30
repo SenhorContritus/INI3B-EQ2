@@ -70,6 +70,9 @@ export const Main = ({ route , navigation} : any) => {
   useEffect(() => {
     initializeTableDB()
     initializeTablePropsDB()
+    fetchAlarmDB()
+    fetchAlarmPropsDB()
+    
   },[])
 
 
@@ -99,7 +102,10 @@ export const Main = ({ route , navigation} : any) => {
           alarmRes.alarmProps.vibrationType, 
           alarmRes.alarmProps.prostpone, 
           alarmRes.alarmProps.prostponeProps, 
-          alarmRes.alarmProps.volume)
+          alarmRes.alarmProps.volume
+        )
+        fetchAlarmDB()
+        fetchAlarmPropsDB()
       
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
@@ -188,21 +194,19 @@ export const Main = ({ route , navigation} : any) => {
   }
 
   //Vai pra tela de modificação e passa o alarme como parâmetro
-  const modifyAlarm = (data: Alarm) => {
-    return navigation.navigate("ConfigurarAlarme", {alarm: data})
+  const modifyAlarm = (data: any, dataProps: any) => {
+    return navigation.navigate("ConfigurarAlarme", {alarm: data, alarmProps: dataProps})
   }
   //Delete
   const deleteAlarm = (id:number) =>{
-    const newList = alarms.filter(a => a.id != id)
-    return setAlarm(newList)
+    deleteAlarmDB(id)
+    deleteAlarmPropsDB(id)
+    return fetchAlarmDB()
   }
   //Select ALl
   const showAlarm = () => {
-    const show = async () => {
-      fetchAlarmDB()
-      return <View>{data}</View>
-    }
-    return show()
+      const body = data.map(a => <CompAlarm id={a.id} data={a} dataProps={dataProps[(a.id - 1)]} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} handleActivePress={activeAlarm} navigation={navigation} location={location}/>)
+      return body
   }
 
 
@@ -262,7 +266,7 @@ export const Main = ({ route , navigation} : any) => {
         {showAlarm()}
       </View>
       <View style={styles.buttonNewView}>
-        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined, listLenght: alarms.length + 1})}>
+        <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined, listLenght: data.length + 1})}>
           <Text style={styles.buttonNewText}>+</Text>
         </Pressable>
       </View>
