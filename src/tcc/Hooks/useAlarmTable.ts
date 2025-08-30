@@ -7,6 +7,15 @@ const db = SQLite.openDatabaseSync('database.db');
 const useAlarms = () => {
     const [data, setData] = useState<any[]>([]);
 
+    const dropTable = async () => {
+        try {
+            await db.execAsync("DROP TABLE IF EXISTS alarm")
+            console.log("ja era os alarms")
+        } catch (error) {
+            console.log("Esse tal de alarm é insistente")
+        }
+    }
+
     const initializeTableDB = async () => {
         try {   
             await db.execAsync(
@@ -60,6 +69,6 @@ const useAlarms = () => {
             console.log(error)
         }
     }
-    return {initializeTableDB, fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB, data}
+    return {dropTable,initializeTableDB, fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB, data}
 };
 export default useAlarms;

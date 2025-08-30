@@ -64,14 +64,13 @@ export const Main = ({ route , navigation} : any) => {
   const dayString = `${day}/${month}`;
 
   //banco de dados
-  const {initializeTableDB,fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB,data} = useAlarm()
-  const {initializeTablePropsDB, fetchAlarmPropsDB,insertAlarmPropsDB, updateAlarmPropsDB,deleteAlarmPropsDB, dataProps} = useAlarmProps()
+  const {dropTable,initializeTableDB,fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB,data} = useAlarm()
+  const {dropTableProps,initializeTablePropsDB, fetchAlarmPropsDB,insertAlarmPropsDB, updateAlarmPropsDB,deleteAlarmPropsDB, dataProps} = useAlarmProps()
 
   useEffect(() => {
     initializeTableDB()
     initializeTablePropsDB()
     fetchAlarmDB()
-    fetchAlarmPropsDB()
     
   },[])
 
@@ -93,7 +92,6 @@ export const Main = ({ route , navigation} : any) => {
         console.log("aaaa")
         insertAlarmDB(alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
         insertAlarmPropsDB(
-          alarmRes.id, 
           alarmRes.alarmProps.active, 
           alarmRes.alarmProps.daysActive, 
           alarmRes.alarmProps.sound,
@@ -104,9 +102,7 @@ export const Main = ({ route , navigation} : any) => {
           alarmRes.alarmProps.prostponeProps, 
           alarmRes.alarmProps.volume
         )
-        fetchAlarmDB()
-        fetchAlarmPropsDB()
-      
+        fetchAlarmDB() 
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
@@ -175,27 +171,34 @@ export const Main = ({ route , navigation} : any) => {
 
   //Armazenamento de alarmes (as funções sqlite serão colocadas aqui)
 
-  const activeAlarm = (data: Alarm, active: boolean) =>{
-  return (
-    data.alarmProps && data?
-        alarms.splice(
-          ((data.id) - 1),
-          1,
-          new Alarm(
-            data.id,
-            data.name, 
-            {x: data.coords.x ,y: data.coords.y}, 
-            data.address,
-            new AlarmProps(data.alarmProps.id, active, data.alarmProps.daysActive, data.alarmProps.sound, "",data.alarmProps.vibration,"",data.alarmProps.prostpone,{times: 0, timeWait:0 }, 10 )
-          )
-        ):
-        window.alert("[ERROR]: ALARM PROPS IS NULL")
-  )
+  const activeAlarm = (alarm: any, alarmProps:any, active: boolean) =>{
+    if(alarmProps && alarm){
+      updateAlarmDB(
+        alarm.id,
+        alarm.name,
+        alarm.latitude,
+        alarm.longitude,
+        alarm.address
+      )
+      updateAlarmPropsDB(
+        alarm.id,
+        active,
+        alarmProps.daysActive,
+        alarmProps.sound,
+        alarmProps.soundUrl,
+        alarmProps.vibration,
+        alarmProps.vibrationType,
+        alarmProps.prostpone,
+        alarmProps.prostponeProps, 
+        alarmProps.volume,
+      )
+    }
+    window.alert("[ERROR]: ALARM PROPS IS NULL")
   }
 
   //Vai pra tela de modificação e passa o alarme como parâmetro
-  const modifyAlarm = (data: any, dataProps: any) => {
-    return navigation.navigate("ConfigurarAlarme", {alarm: data, alarmProps: dataProps})
+  const modifyAlarm = (alarm: any, alarmProps: any) => {
+    return navigation.navigate("ConfigurarAlarme", {alarm: alarm, alarmProps: alarmProps})
   }
   //Delete
   const deleteAlarm = (id:number) =>{
@@ -205,7 +208,22 @@ export const Main = ({ route , navigation} : any) => {
   }
   //Select ALl
   const showAlarm = () => {
-      const body = data.map(a => <CompAlarm id={a.id} data={a} dataProps={dataProps[(a.id - 1)]} x={location?.coords.latitude} y={location?.coords.longitude} handleDeletePress={deleteAlarm} handleEditPress={modifyAlarm} handleActivePress={activeAlarm} navigation={navigation} location={location}/>)
+      
+      const body = data.map(a => 
+        <CompAlarm 
+          id={a.id} 
+          data={a}  
+          x={location?.coords.latitude} 
+          y={location?.coords.longitude} 
+          handleDeletePress={deleteAlarm} 
+          handleEditPress={modifyAlarm} 
+          handleActivePress={activeAlarm} 
+          navigation={navigation} 
+          location={location}
+        />
+      
+      )
+          
       return body
   }
 

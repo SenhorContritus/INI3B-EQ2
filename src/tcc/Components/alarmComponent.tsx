@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Alarm from "../Classes/Alarm";
 import { View, Text, Pressable, Image } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
-import MapView from "react-native-maps";
-import { Marker } from "react-native-maps";
-import AlarmProps from "../Classes/AlarmProps";
+import useAlarmeProps from "../Hooks/useAlarmPropsTable";
+
+
 
 type AlarmProp = {
     id: number,
     data: any,
-    dataProps:any,
     x: number,
     y: number,
     location: any,
@@ -23,20 +22,24 @@ type AlarmProp = {
 
 
 export default function CompAlarm(props: AlarmProp){
+    const {fetchAlarmPropsDB, dataProps} = useAlarmeProps()
+
+    useEffect(() => {
+        fetchAlarmPropsDB(props.data.id)
+    },[])
 
     const nav = props.navigation
-
+    console.log(dataProps)
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
         }
     }
-
     const calcDistMatrix = async () => {
         
         try{
-            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.latitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
+            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.longitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
             if(!response.ok){
                 throw new Error("[API FETCH]:" + response)
             }else{
@@ -59,7 +62,7 @@ export default function CompAlarm(props: AlarmProp){
 
 
     useEffect(()=>{
-            if(props.data.alarmProps?.active){
+            if(dataProps.active){
                 calcDistMatrix()
             }
         
@@ -68,7 +71,7 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.longitude}, ${props.data.latitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
+                src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.longitude}, ${props.data.latitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.longitude}, ${props.data.latitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
             
             />
             
@@ -79,7 +82,7 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{props.dataProps?.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
+                <Text style={styles.infoText}>{dataProps.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
                 </Text>
             </View>
             <View style={styles.optionsContainer}>
@@ -87,14 +90,14 @@ export default function CompAlarm(props: AlarmProp){
                     <Pressable 
                     style={[
                         styles.activeButton,
-                        props.data.alarmProps?.active?
+                        dataProps.active?
                         {backgroundColor:"gray"}:{backgroundColor:"black"}
                         ]}
-                    onPress={() => props.handleActivePress(props.dataProps , !props.dataProps?.active)}
+                    onPress={() => props.handleActivePress(dataProps , !dataProps.active)}
                     />
                 </View>
                 <View style={styles.optionsView}>
-                    <Pressable onPress={() => props.handleEditPress(props.data, props.dataProps)} style={styles.btEdit}>
+                    <Pressable onPress={() => props.handleEditPress(props.data, dataProps)} style={styles.btEdit}>
                         <Text style={styles.btText}>
                             Editar
                         </Text>
@@ -105,7 +108,6 @@ export default function CompAlarm(props: AlarmProp){
                         </Text>
                     </Pressable> 
                 </View>
-                
             </View>
         </View>
     );

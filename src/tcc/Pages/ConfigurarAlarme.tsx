@@ -14,7 +14,7 @@ const dias = ["D", "S", "T", "Q", "Q", "S", "S"];
 export const ConfigurarAlarme = ({route, navigation} : any) => {
 
   const props = route.params
-  const [Alarme, setAlarme] = useState<Alarm | undefined>();  
+  const [Alarme, setAlarme] = useState<any>();  
   const [nome, setNome] = useState("");
   const [ativo, setAtivo] = useState(true)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
@@ -82,14 +82,14 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
   useEffect(() => {
-    if(props.alarm){
+    if(props.alarm && props.alarmProps){
       const alarme = props?.alarm
       const alarmProps = props?.alarmProps
       setAlarme(props?.alarm)
       setNome(alarme.name)
       setAddress(alarme.address)
       setCoords({x: alarme.latitude, y: alarme.longitude})
-      setDiasSelecionados(alarmProps.daysActive)
+      //setDiasSelecionados(alarmProps.daysActive)
       setSomAtivo(alarmProps.sound)
       setVibracaoAtiva(alarmProps.vibration)
       setAdiarAtivo(alarmProps.prostpone)

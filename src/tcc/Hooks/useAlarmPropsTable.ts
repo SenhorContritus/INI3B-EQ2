@@ -4,7 +4,16 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabaseSync('database.db');
 
 const useAlarmeProps = () => {
-    const [dataProps, setData] = useState<any[]>([]);
+    const [dataProps, setData] = useState<any>();
+
+    const dropTableProps = async () => {
+        try {
+            await db.execAsync("DROP TABLE IF EXISTS alarm_props")
+            console.log("ja era os props")
+        } catch (error) {
+            console.log("Esse tal de props é insistente")
+        }
+    }
 
     const initializeTablePropsDB = async () => {
         try {   
@@ -20,8 +29,7 @@ const useAlarmeProps = () => {
                     vibrationType VARCHAR,
                     prostpone BOOLEAN NOT NULL,
                     prostponeProps VARCHAR, 
-                    volume INTEGER,
-                    FOREIGN KEY (alarm_id) REFERENCES alarm(id)
+                    volume INTEGER
                 )`
             );
 
@@ -31,17 +39,16 @@ const useAlarmeProps = () => {
         }
     };
 
-    const fetchAlarmPropsDB = async () => {
+    const fetchAlarmPropsDB = async (alarm_id: number) => {
         try {
-            const rows = await db.getAllAsync('SELECT * FROM alarm_props ;');
-            setData(rows);
+            const row = await db.getAllAsync('SELECT * FROM alarm_props WHERE id= ? ;', [alarm_id]);
+            setData(row);
         } catch (error) {
             console.error('Erro ao buscar as propriedades do alarme', error);
         }
     };
 
     const insertAlarmPropsDB = async (
-        alarm_id: number,
         active: boolean,
         daysActive: string,
         sound: boolean,
@@ -55,9 +62,9 @@ const useAlarmeProps = () => {
         try {
             await db.runAsync(
                 `INSERT INTO alarm_props (
-                    alarm_id, active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [alarm_id, active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume]
+                     active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume
+                ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume]
             );
             console.log('Propriedades do alarme inseridas com sucesso');
         } catch (error) {
@@ -85,7 +92,7 @@ const useAlarmeProps = () => {
             console.log("[ALARM_PROPS]:Tabela atualizada com sucesso")
 
         }catch (error){
-            console.log("[ALARM_PROPS]:Atualização não pode ser feita")
+            console.log("[ALARM_PROPS]:Atualização não pode ser realizada")
         }
     }
     const deleteAlarmPropsDB = async (alarm_id: number) => {
@@ -96,6 +103,6 @@ const useAlarmeProps = () => {
             console.log("[ALARM_PROPS]: Falha ao deletar😧😧")
         }
     }
-    return {initializeTablePropsDB, fetchAlarmPropsDB, insertAlarmPropsDB, updateAlarmPropsDB, deleteAlarmPropsDB, dataProps}
+    return {dropTableProps, initializeTablePropsDB, fetchAlarmPropsDB, insertAlarmPropsDB, updateAlarmPropsDB, deleteAlarmPropsDB, dataProps}
 };
 export default useAlarmeProps;
