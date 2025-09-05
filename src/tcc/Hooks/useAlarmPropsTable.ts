@@ -5,6 +5,7 @@ const db = SQLite.openDatabaseSync('database.db');
 
 const useAlarmeProps = () => {
     const [dataProps, setData] = useState<any>();
+    const [allDataProps, setAllData] = useState<any[]>([]);
 
     const dropTableProps = async () => {
         try {
@@ -20,7 +21,6 @@ const useAlarmeProps = () => {
             await db.execAsync(
                 `CREATE TABLE IF NOT EXISTS alarm_props (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    alarm_id INTEGER,
                     active BOOLEAN NOT NULL,
                     daysActive VARCHAR NOT NULL,
                     sound BOOLEAN NOT NULL,
@@ -41,8 +41,18 @@ const useAlarmeProps = () => {
 
     const fetchAlarmPropsDB = async (alarm_id: number) => {
         try {
-            const row = await db.getAllAsync('SELECT * FROM alarm_props WHERE id= ? ;', [alarm_id]);
+            const row = await db.getAllAsync('SELECT * FROM alarm_props WHERE id= ? ', [alarm_id]);
             setData(row);
+        } catch (error) {
+            console.error('Erro ao buscar as propriedades do alarme', error);
+        }
+    };
+    const fetchAllAlarmPropsDB = async () => {
+        try {
+            const rows = await db.getAllAsync('SELECT * FROM alarm_props');
+            setAllData(rows)
+            
+            
         } catch (error) {
             console.error('Erro ao buscar as propriedades do alarme', error);
         }
@@ -86,7 +96,7 @@ const useAlarmeProps = () => {
         try{
             await db.runAsync(`
                 UPDATE alarm_props SET (active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume) =
-                                        (?,?,?,?,?,?,?,?)
+                                        (?,?,?,?,?,?,?,?,?)
                                     Where alarm_id = ?
             `,[active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume,alarm_id])
             console.log("[ALARM_PROPS]:Tabela atualizada com sucesso")
@@ -103,6 +113,6 @@ const useAlarmeProps = () => {
             console.log("[ALARM_PROPS]: Falha ao deletar😧😧")
         }
     }
-    return {dropTableProps, initializeTablePropsDB, fetchAlarmPropsDB, insertAlarmPropsDB, updateAlarmPropsDB, deleteAlarmPropsDB, dataProps}
+    return {dropTableProps, initializeTablePropsDB, fetchAlarmPropsDB,fetchAllAlarmPropsDB ,insertAlarmPropsDB, updateAlarmPropsDB, deleteAlarmPropsDB, dataProps, allDataProps}
 };
 export default useAlarmeProps;

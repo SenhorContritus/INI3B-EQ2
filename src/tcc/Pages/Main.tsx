@@ -65,13 +65,11 @@ export const Main = ({ route , navigation} : any) => {
 
   //banco de dados
   const {dropTable,initializeTableDB,fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB,data} = useAlarm()
-  const {dropTableProps,initializeTablePropsDB, fetchAlarmPropsDB,insertAlarmPropsDB, updateAlarmPropsDB,deleteAlarmPropsDB, dataProps} = useAlarmProps()
+  const {dropTableProps,initializeTablePropsDB, fetchAllAlarmPropsDB,insertAlarmPropsDB, updateAlarmPropsDB,deleteAlarmPropsDB, dataProps, allDataProps} = useAlarmProps()
 
   useEffect(() => {
     initializeTableDB()
     initializeTablePropsDB()
-    fetchAlarmDB()
-    
   },[])
 
 
@@ -89,7 +87,7 @@ export const Main = ({ route , navigation} : any) => {
     const alarmRes = route.params?.alarm
     //Create
     if(alarmRes && route.params.edit == false ){
-        console.log("aaaa")
+        console.log(alarmRes)
         insertAlarmDB(alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
         insertAlarmPropsDB(
           alarmRes.alarmProps.active, 
@@ -204,15 +202,22 @@ export const Main = ({ route , navigation} : any) => {
   const deleteAlarm = (id:number) =>{
     deleteAlarmDB(id)
     deleteAlarmPropsDB(id)
-    return fetchAlarmDB()
+    return (() => {
+        fetchAlarmDB()
+        fetchAllAlarmPropsDB()
+      }
+    )
   }
   //Select ALl
   const showAlarm = () => {
-      
+      fetchAlarmDB()
+      fetchAllAlarmPropsDB()
+      console.log(data)
       const body = data.map(a => 
         <CompAlarm 
           id={a.id} 
           data={a}  
+          dataProps={allDataProps[a.id]}
           x={location?.coords.latitude} 
           y={location?.coords.longitude} 
           handleDeletePress={deleteAlarm} 

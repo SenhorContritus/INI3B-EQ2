@@ -9,6 +9,7 @@ import useAlarmeProps from "../Hooks/useAlarmPropsTable";
 type AlarmProp = {
     id: number,
     data: any,
+    dataProps: any
     x: number,
     y: number,
     location: any,
@@ -22,14 +23,9 @@ type AlarmProp = {
 
 
 export default function CompAlarm(props: AlarmProp){
-    const {fetchAlarmPropsDB, dataProps} = useAlarmeProps()
-
-    useEffect(() => {
-        fetchAlarmPropsDB(props.data.id)
-    },[])
 
     const nav = props.navigation
-    console.log(dataProps)
+    const dataProps = props.dataProps
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
