@@ -50,9 +50,7 @@ const useAlarmeProps = () => {
     const fetchAllAlarmPropsDB = async () => {
         try {
             const rows = await db.getAllAsync('SELECT * FROM alarm_props');
-            setAllData(rows)
-            
-            
+            setAllData(rows)   
         } catch (error) {
             console.error('Erro ao buscar as propriedades do alarme', error);
         }
@@ -107,12 +105,17 @@ const useAlarmeProps = () => {
     }
     const deleteAlarmPropsDB = async (alarm_id: number) => {
         try {
-            await db.runAsync("DELETE FROM alarm_props WHERE alarm_id = ?", [alarm_id])
+            await db.runAsync("DELETE FROM alarm_props WHERE id = ?", [alarm_id])
             console.log("[ALARM_PROPS]: Valores deletados com sucesso💅")
         } catch (error) {
             console.log("[ALARM_PROPS]: Falha ao deletar😧😧")
         }
     }
+    useEffect(() => {
+        fetchAllAlarmPropsDB()
+    },[])
+
+
     return {dropTableProps, initializeTablePropsDB, fetchAlarmPropsDB,fetchAllAlarmPropsDB ,insertAlarmPropsDB, updateAlarmPropsDB, deleteAlarmPropsDB, dataProps, allDataProps}
 };
 export default useAlarmeProps;

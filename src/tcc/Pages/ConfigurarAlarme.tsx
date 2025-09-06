@@ -45,6 +45,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
       }
       
     } catch (error) {
+      console.log(error)
       return window.alert(error)
     }
 

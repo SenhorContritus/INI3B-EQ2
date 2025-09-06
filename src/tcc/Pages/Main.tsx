@@ -73,7 +73,6 @@ export const Main = ({ route , navigation} : any) => {
   },[])
 
 
-
   async function getGeoPermission() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status == "granted") {
@@ -101,6 +100,7 @@ export const Main = ({ route , navigation} : any) => {
           alarmRes.alarmProps.volume
         )
         fetchAlarmDB() 
+        fetchAllAlarmPropsDB()
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
@@ -210,14 +210,11 @@ export const Main = ({ route , navigation} : any) => {
   }
   //Select ALl
   const showAlarm = () => {
-      fetchAlarmDB()
-      fetchAllAlarmPropsDB()
-      console.log(data)
       const body = data.map(a => 
         <CompAlarm 
           id={a.id} 
-          data={a}  
-          dataProps={allDataProps[a.id]}
+          data={a} 
+          dataProps={allDataProps}
           x={location?.coords.latitude} 
           y={location?.coords.longitude} 
           handleDeletePress={deleteAlarm} 

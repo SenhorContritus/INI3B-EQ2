@@ -69,6 +69,9 @@ const useAlarms = () => {
             console.log(error)
         }
     }
+    useEffect(() => {
+        fetchAlarmDB()
+    },[])
     return {dropTable,initializeTableDB, fetchAlarmDB, insertAlarmDB, updateAlarmDB, deleteAlarmDB, data}
 };
 export default useAlarms;
