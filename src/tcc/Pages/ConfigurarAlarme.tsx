@@ -31,7 +31,8 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     try {
       const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
       if(!find.ok){
-        throw new Error("[API FETCH]:" + find.json());
+        throw new Error("[GEOCODE FETCH]:" + find.json() );
+        
       }else{
         const response = await find.json()
         if(response != ''){
@@ -39,7 +40,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
           return setCoords(latlong)
         }
         else{
-          throw new Error("[API RESPONSE]:EMPTY RESPONSE");
+          throw new Error("[GEOCODE RESPONSE]:EMPTY RESPONSE");
         }
         
       }

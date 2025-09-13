@@ -1,16 +1,13 @@
 import React = require("react");
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable, Image, Button } from "react-native";
+import { StyleSheet, View, Text, Pressable} from "react-native";
 import * as Location from "expo-location";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
 import { useFonts } from 'expo-font';
 import MapView from "react-native-maps";
-import * as SQLite from "expo-sqlite"
-import Alarm from "../Classes/Alarm";
 import CompAlarm from "../Components/alarmComponent";
-import AlarmProps from "../Classes/AlarmProps";
 import useAlarm from "../Hooks/useAlarmTable";
 import useAlarmProps from "../Hooks/useAlarmPropsTable";
 
@@ -105,8 +102,19 @@ export const Main = ({ route , navigation} : any) => {
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
     if(alarmRes && route.params?.edit == true){
-      console.log(alarmRes.id)
-      return alarms.splice(((alarmRes.id) - 1), 1, route.params.alarm)
+      updateAlarmDB(alarmRes.id,alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
+      updateAlarmPropsDB(
+        alarmRes.id,
+        alarmRes.alarmProps.active, 
+        alarmRes.alarmProps.daysActive, 
+        alarmRes.alarmProps.sound,
+        alarmRes.alarmProps.soundUrl,
+        alarmRes.alarmProps.vibration,
+        alarmRes.alarmProps.vibrationType, 
+        alarmRes.alarmProps.prostpone, 
+        alarmRes.alarmProps.prostponeProps, 
+        alarmRes.alarmProps.volume
+      )
     }
   }
 
@@ -191,7 +199,6 @@ export const Main = ({ route , navigation} : any) => {
         alarmProps.volume,
       )
     }
-    window.alert("[ERROR]: ALARM PROPS IS NULL")
   }
 
   //Vai pra tela de modificação e passa o alarme como parâmetro
@@ -210,11 +217,13 @@ export const Main = ({ route , navigation} : any) => {
   }
   //Select ALl
   const showAlarm = () => {
+      fetchAlarmDB()
+      fetchAllAlarmPropsDB()
       const body = data.map(a => 
         <CompAlarm 
           id={a.id} 
           data={a} 
-          dataProps={allDataProps}
+          dataProps={allDataProps.filter(b => b.id == a.id)}
           x={location?.coords.latitude} 
           y={location?.coords.longitude} 
           handleDeletePress={deleteAlarm} 

@@ -43,7 +43,7 @@ const useAlarms = () => {
     const insertAlarmDB = async (name: string, latitude: number, longitude: number, address: string) => {
         try {
             await db.runAsync(
-                'INSERT INTO alarm (name, latitude, longitude, address) VALUES (?, ?, ?, ?);',
+                'INSERT INTO alarm (name, latitude, longitude, address) VALUES (?, ?, ?, ?)',
                 [name, latitude, longitude, address]
             );
             console.log('Alarme inserido com sucesso');
@@ -54,7 +54,7 @@ const useAlarms = () => {
     const updateAlarmDB = async (alarm_id:number, name: string, latitude: number, longitude: number, address: string) => {
         try {
             await db.runAsync(`
-                UPDATE alarm (name, latitude, longitude, address) = (?,?,?,?) WHERE id = ?;
+                UPDATE alarm SET (name, latitude, longitude, address) = (?,?,?,?) WHERE id = ?;
             `,[name,latitude,longitude,address, alarm_id])
             console.log('Configurações alteradas com sucesso');
         } catch (error) {

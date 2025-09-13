@@ -9,7 +9,7 @@ import useAlarmeProps from "../Hooks/useAlarmPropsTable";
 type AlarmProp = {
     id: number,
     data: any,
-    dataProps: any[],
+    dataProps: any,
     x: number,
     y: number,
     location: any,
@@ -25,9 +25,8 @@ type AlarmProp = {
 export default function CompAlarm(props: AlarmProp){
 
     const nav = props.navigation
-    const dataProps = props.dataProps[props.data.id-1]
+    const dataProps = props.dataProps
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
-    console.log(props.data)
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
@@ -38,11 +37,11 @@ export default function CompAlarm(props: AlarmProp){
         try{
             const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.longitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
             if(!response.ok){
-                throw new Error("[API FETCH]:" + response)
+                throw new Error("[MATRIX FETCH]:" + response.json())
             }else{
                 const body = await response.json()
                 if(body == " "){
-                    throw new Error("[API RESPONSE]: EMPTY RESPONSE")
+                    throw new Error("[MATRIX RESPONSE]: EMPTY RESPONSE")
                 }
                 else{
                     const distance = (body.distances[0][1]/1000).toFixed(1)
