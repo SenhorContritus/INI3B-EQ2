@@ -18,6 +18,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   const [nome, setNome] = useState("");
   const [ativo, setAtivo] = useState(true)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
+  const [diasSelecionadosStr, setDiasSelecionadosStr] = useState(["false,false,false,false,false,false,false"])
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
@@ -57,6 +58,8 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   function toggleDia(index: number) {
     const novosDias = [...diasSelecionados]; //spread operator para criar uma cópia do array
     novosDias[index] = !novosDias[index];
+    const listaStr = novosDias.map(bool => bool.toString())
+    setDiasSelecionadosStr(listaStr)
     setDiasSelecionados(novosDias);
   }
   //é chamado quando nenhum alarme foi enviado por parâmetro 
@@ -68,7 +71,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, ativo,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, ativo,diasSelecionadosStr, somAtivo, "a",vibracaoAtiva,"a ",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
@@ -79,19 +82,19 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps(Alarme?.id, ativo,diasSelecionados,somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps(Alarme?.id, ativo,diasSelecionadosStr,somAtivo, "a",vibracaoAtiva,"a",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
   useEffect(() => {
-    if(props.alarm && props.alarmProps){
+    if(props.alarm && props.alarmProps != undefined){
       const alarme = props?.alarm
       const alarmProps = props?.alarmProps
       setAlarme(props?.alarm)
       setNome(alarme.name)
       setAddress(alarme.address)
       setCoords({x: alarme.latitude, y: alarme.longitude})
-      //setDiasSelecionados(alarmProps.daysActive)
+      console.log(alarmProps)
       setSomAtivo(alarmProps.sound)
       setVibracaoAtiva(alarmProps.vibration)
       setAdiarAtivo(alarmProps.prostpone)

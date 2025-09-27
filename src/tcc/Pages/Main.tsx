@@ -81,6 +81,7 @@ export const Main = ({ route , navigation} : any) => {
 
   const verifyNewAlarm = () =>{
     const alarmRes = route.params?.alarm
+    const alarmProps = route.params?.alarmProps
     //Create
     if(alarmRes && route.params.edit == false ){
         console.log(alarmRes)
@@ -105,15 +106,15 @@ export const Main = ({ route , navigation} : any) => {
       updateAlarmDB(alarmRes.id,alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
       updateAlarmPropsDB(
         alarmRes.id,
-        alarmRes.alarmProps.active, 
-        alarmRes.alarmProps.daysActive, 
-        alarmRes.alarmProps.sound,
-        alarmRes.alarmProps.soundUrl,
-        alarmRes.alarmProps.vibration,
-        alarmRes.alarmProps.vibrationType, 
-        alarmRes.alarmProps.prostpone, 
-        alarmRes.alarmProps.prostponeProps, 
-        alarmRes.alarmProps.volume
+        alarmProps.active, 
+        alarmProps.daysActive, 
+        alarmProps.sound,
+        alarmProps.soundUrl,
+        alarmProps.vibration,
+        alarmProps.vibrationType, 
+        alarmProps.prostpone, 
+        alarmProps.prostponeProps, 
+        alarmProps.volume
       )
     }
   }
@@ -202,8 +203,8 @@ export const Main = ({ route , navigation} : any) => {
   }
 
   //Vai pra tela de modificação e passa o alarme como parâmetro
-  const modifyAlarm = (alarm: any, alarmProps: any) => {
-    return navigation.navigate("ConfigurarAlarme", {alarm: alarm, alarmProps: alarmProps})
+  const modifyAlarm = async (alarm: any, alarmProps: any) => {
+    return await navigation.navigate("ConfigurarAlarme", {alarm: alarm, alarmProps: alarmProps})
   }
   //Delete
   const deleteAlarm = (id:number) =>{
@@ -218,6 +219,7 @@ export const Main = ({ route , navigation} : any) => {
   //Select ALl
   const showAlarm = () => {
       fetchAlarmDB()
+      fetchAllAlarmPropsDB()
       fetchAllAlarmPropsDB()
       const body = data.map(a => 
         <CompAlarm 

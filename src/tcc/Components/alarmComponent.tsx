@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Alarm from "../Classes/Alarm";
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, Switch } from "react-native";
 import { styles } from "../Stylesheets/Components/alarmComponentStyle"; 
 import useAlarmeProps from "../Hooks/useAlarmPropsTable";
 
@@ -27,11 +27,13 @@ export default function CompAlarm(props: AlarmProp){
     const nav = props.navigation
     const dataProps = props.dataProps
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
+    const [active, setActive] = useState(Boolean(dataProps.active))
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
         }
     }
+    
     const calcDistMatrix = async () => {
         
         try{
@@ -55,7 +57,10 @@ export default function CompAlarm(props: AlarmProp){
             return console.warn(e)
         }
     }
-
+    useEffect(() => {
+        console.log(active)
+        setActive(Boolean(dataProps.active))
+    })
 
     useEffect(()=>{
             if(dataProps.active){
@@ -78,22 +83,20 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{dataProps.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
+                <Text style={styles.infoText}>{active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
                 </Text>
             </View>
             <View style={styles.optionsContainer}>
                 <View style={styles.activeView}>
-                    <Pressable 
-                    style={[
-                        styles.activeButton,
-                        dataProps.active?
-                        {backgroundColor:"gray"}:{backgroundColor:"black"}
-                        ]}
-                    onPress={() => props.handleActivePress(dataProps , !dataProps.active)}
+                    <Switch
+                    value={active}
+                    onValueChange={() => props.handleActivePress(props.data, dataProps , !dataProps.active)}
+                    thumbColor={'#1E1F26'}
+                    trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}}
                     />
                 </View>
                 <View style={styles.optionsView}>
-                    <Pressable onPress={() => props.handleEditPress(props.data, dataProps)} style={styles.btEdit}>
+                    <Pressable onPress={async() => await props.handleEditPress(props.data, dataProps)} style={styles.btEdit}>
                         <Text style={styles.btText}>
                             Editar
                         </Text>

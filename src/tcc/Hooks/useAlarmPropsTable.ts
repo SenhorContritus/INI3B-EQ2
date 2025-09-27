@@ -95,12 +95,12 @@ const useAlarmeProps = () => {
             await db.runAsync(`
                 UPDATE alarm_props SET (active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume) =
                                         (?,?,?,?,?,?,?,?,?)
-                                    Where alarm_id = ?
+                                    Where id = ?
             `,[active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume,alarm_id])
             console.log("[ALARM_PROPS]:Tabela atualizada com sucesso")
 
         }catch (error){
-            console.log("[ALARM_PROPS]:Atualização não pode ser realizada")
+            console.log("[ALARM_PROPS]:Atualização não pode ser realizada", error)
         }
     }
     const deleteAlarmPropsDB = async (alarm_id: number) => {
