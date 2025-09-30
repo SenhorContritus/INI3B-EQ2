@@ -1,4 +1,4 @@
-import React = require("react");
+import React from "react";
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated, Button } from "react-native";
 import Alarm from "../Classes/Alarm";
@@ -158,7 +158,8 @@ export default function Main({ navigation , route }: any) {
               borderRadius: w(20),
             },
           ]}
-          onPress={() => navigation.popTo("Main", {alarm: new Alarm(id, nome, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, false,diasSelecionados, somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
+          onPress={() =>{// navigation.popTo("Main", {alarm: new Alarm(id, nome, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, false,String(diasSelecionados)., somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
+          }
 }
         >
           <Text style={[styles.offButtonText, { fontSize: Math.max(w(14), 13) }]}>
