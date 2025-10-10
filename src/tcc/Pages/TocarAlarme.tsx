@@ -47,26 +47,11 @@ function AnimatedButton({ style, onPress, children }: any) {
 
 export default function Main({ navigation , route }: any) {
   const [time, setTime] = useState(new Date()); 
-  const [nome, setNome] = useState("");
-  const [ativo, setAtivo] = useState(true)
-  const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
-  const [somAtivo, setSomAtivo] = useState(true);
-  const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
-  const [adiarAtivo, setAdiarAtivo] = useState(false);
-  const [coords, setCoords] = useState<_coords>({x:0 , y:0})
-  const [address, setAddress] = useState("")
 
   useEffect(() => {
-    if(alarm){
-      setNome(alarm.name)
-      setAddress(alarm.address)
-      setDiasSelecionados(alarm.alarmProps.daysActive)
-      setSomAtivo(alarm.alarmProps.sound)
-      setVibracaoAtiva(alarm.alarmProps.vibration)
-      setAdiarAtivo(alarm.alarmProps.prostpone)
-      setCoords(alarm.coords)
-    }
-  })
+    const alarm = route.params.alarm
+    const alarmProps = route.params.alarmProps
+  },[])
 
 
   useEffect(() => {
@@ -158,7 +143,8 @@ export default function Main({ navigation , route }: any) {
               borderRadius: w(20),
             },
           ]}
-          onPress={() =>{// navigation.popTo("Main", {alarm: new Alarm(id, nome, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, false,String(diasSelecionados)., somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
+          onPress={() =>{
+            //navigation.popTo("Main", {alarm: new Alarm(alarm.id, alarm.nome, {x: alarm.longitude.x ,y: alarm.latitude}, alarm.address,new AlarmProps( alarm.id, false, String(alarmProps.diasSelecionados)., somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
           }
 }
         >

@@ -27,7 +27,7 @@ export default function CompAlarm(props: AlarmProp){
     const nav = props.navigation
     const dataProps = props.dataProps
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
-    const [active, setActive] = useState(Boolean(dataProps.active))
+
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
@@ -49,18 +49,18 @@ export default function CompAlarm(props: AlarmProp){
                     const distance = (body.distances[0][1]/1000).toFixed(1)
                     const duration = (body.durations[0][1]/60).toFixed(0)
                     setLocInfo({duration: duration, distance: distance})
-                    return verifyAlarm()
                 }
+                verifyAlarm()
             }
 
         }catch(e){
             return console.warn(e)
-        }
+    ""    }
     }
     useEffect(() => {
-        console.log(active)
-        setActive(Boolean(dataProps.active))
-    })
+        console.log(dataProps)
+        console.log(props.data)
+    },[])
 
     useEffect(()=>{
             if(dataProps.active){
@@ -72,7 +72,7 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://api.mapbox.com/styles/v1/staticmap?center=${props.data.longitude}, ${props.data.latitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.longitude}, ${props.data.latitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=AIzaSyD1r_FHCfK3hcsFg33ZH--QdIXeY6Pviqo`}
             
             />
             
@@ -83,13 +83,13 @@ export default function CompAlarm(props: AlarmProp){
                 <Text style={styles.infoText}>
                     Aprox: 
                 </Text>
-                <Text style={styles.infoText}>{active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
+                <Text style={styles.infoText}>{dataProps.active?`${locInfo?.distance}km\n${locInfo?.duration}min`: `inativo`}
                 </Text>
             </View>
             <View style={styles.optionsContainer}>
                 <View style={styles.activeView}>
                     <Switch
-                    value={active}
+                    value={Boolean(dataProps.active)}
                     onValueChange={() => props.handleActivePress(props.data, dataProps , !dataProps.active)}
                     thumbColor={'#1E1F26'}
                     trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}}

@@ -220,12 +220,11 @@ export const Main = ({ route , navigation} : any) => {
   const showAlarm = () => {
       fetchAlarmDB()
       fetchAllAlarmPropsDB()
-      fetchAllAlarmPropsDB()
       const body = data.map(a => 
         <CompAlarm 
           id={a.id} 
           data={a} 
-          dataProps={allDataProps.filter(b => b.id == a.id)}
+          dataProps={allDataProps.filter(b => b.id == a.id)[0]}
           x={location?.coords.latitude} 
           y={location?.coords.longitude} 
           handleDeletePress={deleteAlarm} 
