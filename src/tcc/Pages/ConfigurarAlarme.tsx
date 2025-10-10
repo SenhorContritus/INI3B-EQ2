@@ -41,7 +41,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
           return setCoords(latlong)
         }
         else{
-          throw new Error("[GEOCODE RESPONSE]:EMPTY RESPONSE");
+         throw new Error("[GEOCODE RESPONSE]:EMPTY RESPONSE");
         }
         
       }
