@@ -33,6 +33,9 @@ export default function CompAlarm(props: AlarmProp){
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
         }
     }
+    useEffect(() => {
+        console.log(dataProps.daysActive)
+    },[])
     
     const calcDistMatrix = async () => {
         

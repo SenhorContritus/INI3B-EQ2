@@ -220,6 +220,7 @@ export const Main = ({ route , navigation} : any) => {
   const showAlarm = () => {
       fetchAlarmDB()
       fetchAllAlarmPropsDB()
+      fetchAllAlarmPropsDB()
       const body = data.map(a => 
         <CompAlarm 
           id={a.id} 

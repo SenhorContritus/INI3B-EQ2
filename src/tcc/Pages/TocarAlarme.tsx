@@ -49,12 +49,6 @@ export default function Main({ navigation , route }: any) {
   const [time, setTime] = useState(new Date()); 
 
   useEffect(() => {
-    const alarm = route.params.alarm
-    const alarmProps = route.params.alarmProps
-  },[])
-
-
-  useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -66,7 +60,7 @@ export default function Main({ navigation , route }: any) {
 
   const alarm = route.params.Alarm
   const id = route.params.Id
-
+  const alarmProps = route.params.alarmProps
   return (
     <View style={styles.root}>
       {}
@@ -144,7 +138,26 @@ export default function Main({ navigation , route }: any) {
             },
           ]}
           onPress={() =>{
-            //navigation.popTo("Main", {alarm: new Alarm(alarm.id, alarm.nome, {x: alarm.longitude.x ,y: alarm.latitude}, alarm.address,new AlarmProps( alarm.id, false, String(alarmProps.diasSelecionados)., somAtivo, "",vibracaoAtiva,"",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:true})
+            navigation.popTo("Main", {
+              alarm: new Alarm(
+                alarm.id, 
+                alarm.nome, 
+                {x: alarm.longitude.x ,y: alarm.latitude}, 
+                alarm.address,
+                new AlarmProps( 
+                  alarm.id, 
+                  false, 
+                  alarmProps.diasSelecionados , 
+                  alarmProps.somAtivo, 
+                  alarmProps.soundUrl, 
+                  alarmProps.vibration, 
+                  alarmProps.vibrationType,
+                  alarmProps.prostponeProps,
+                  {times: 0, timeWait:0 }, 10 )
+              ),
+              edit:true
+              }
+            )
           }
 }
         >
