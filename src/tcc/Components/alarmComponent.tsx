@@ -30,7 +30,7 @@ export default function CompAlarm(props: AlarmProp){
 
     const verifyAlarm = () => {
         if(Number(locInfo?.distance) <= 0.2){
-            nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id})
+            nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id, AlarmProps: dataProps})
         }
     }
     useEffect(() => {
@@ -44,7 +44,8 @@ export default function CompAlarm(props: AlarmProp){
             if(!response.ok){
                 throw new Error("[MATRIX FETCH]:" + response.json())
             }else{
-                const body = await response.json()
+                const aa = await response.json()
+                const body = await aa
                 if(body == " "){
                     throw new Error("[MATRIX RESPONSE]: EMPTY RESPONSE")
                 }

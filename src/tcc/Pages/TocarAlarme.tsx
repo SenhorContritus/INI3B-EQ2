@@ -60,7 +60,7 @@ export default function Main({ navigation , route }: any) {
 
   const alarm = route.params.Alarm
   const id = route.params.Id
-  const alarmProps = route.params.alarmProps
+  const alarmProps = route.params.AlarmProps
   return (
     <View style={styles.root}>
       {}
@@ -147,7 +147,7 @@ export default function Main({ navigation , route }: any) {
                 new AlarmProps( 
                   alarm.id, 
                   false, 
-                  alarmProps.diasSelecionados , 
+                  alarmProps.daysActive , 
                   alarmProps.somAtivo, 
                   alarmProps.soundUrl, 
                   alarmProps.vibration, 
