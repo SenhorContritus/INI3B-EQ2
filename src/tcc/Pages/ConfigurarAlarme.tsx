@@ -107,7 +107,9 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     <View style={styles.body}>
       {/* Mapa */}
       <View style={styles.map}>
-
+        <Image>
+          
+        </Image>
       </View>
 
       {/* Card de configuração */}
