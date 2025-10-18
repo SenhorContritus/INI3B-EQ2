@@ -107,9 +107,10 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     <View style={styles.body}>
       {/* Mapa */}
       <View style={styles.map}>
-        <Image>
-          
-        </Image>
+        <Image 
+          style={styles.mapView}
+          src={`https://maps.googleapis.com/maps/api/staticmap?center=${coords.x}, ${coords.y}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${coords.x}, ${coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}          
+        />
       </View>
 
       {/* Card de configuração */}
@@ -160,7 +161,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
             <Text style={styles.itemTitle}>Som do alarme</Text>
             <Text style={styles.itemSubtitle}>Matui</Text>
           </View>
-          <Switch value={somAtivo} onValueChange={setSomAtivo} />
+          <Switch value={Boolean(somAtivo)} onValueChange={setSomAtivo} />
         </View>
 
         {/* Padrão de vibração */}
@@ -169,7 +170,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
             <Text style={styles.itemTitle}>Padrão de vibração</Text>
             <Text style={styles.itemSubtitle}>tu tu tu</Text>
           </View>
-          <Switch value={vibracaoAtiva} onValueChange={setVibracaoAtiva} />
+          <Switch value={Boolean(vibracaoAtiva)} onValueChange={setVibracaoAtiva} />
         </View>
 
         {/* Adiar */}
@@ -178,7 +179,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
             <Text style={styles.itemTitle}>Adiar</Text>
             <Text style={styles.itemSubtitle}>1 minuto, infinitas vezes</Text>
           </View>
-          <Switch value={adiarAtivo} onValueChange={setAdiarAtivo} />
+          <Switch value={Boolean(adiarAtivo)} onValueChange={setAdiarAtivo} />
         </View>
 
         {/* Botões */}
@@ -203,11 +204,10 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   map: {
-    width: "95%",
-    height: 180,
-    borderRadius: 18,
-    marginBottom: 24,
+    width: "90%",
     alignSelf: "center",
+    justifyContent: "center",
+    flex: 0.7,
   },
   card: {
     backgroundColor: "#231B1B",
@@ -307,4 +307,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontStyle: "italic",
   },
+  mapView: {
+    flex: 0.9,
+    flexDirection: "row",
+    borderRadius: 15
+  }
 });

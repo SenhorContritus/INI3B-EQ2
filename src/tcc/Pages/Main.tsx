@@ -99,6 +99,7 @@ export const Main = ({ route , navigation} : any) => {
         )
         fetchAlarmDB() 
         fetchAllAlarmPropsDB()
+        fetchAllAlarmPropsDB()
     }
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
@@ -116,6 +117,9 @@ export const Main = ({ route , navigation} : any) => {
         alarmProps.prostponeProps, 
         alarmProps.volume
       )
+      fetchAlarmDB() 
+      fetchAllAlarmPropsDB()
+      fetchAllAlarmPropsDB()
     }
   }
 
