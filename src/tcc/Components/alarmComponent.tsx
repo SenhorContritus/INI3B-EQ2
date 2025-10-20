@@ -28,11 +28,6 @@ export default function CompAlarm(props: AlarmProp){
     const dataProps = props.dataProps
     const [locInfo, setLocInfo] = useState<{duration: string, distance: string}>()
 
-    const verifyAlarm = () => {
-        if(Number(locInfo?.distance) <= 0.2){
-            nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id, AlarmProps: dataProps})
-        }
-    }
     useEffect(() => {
         console.log(dataProps.daysActive)
     },[])
@@ -54,7 +49,6 @@ export default function CompAlarm(props: AlarmProp){
                     const duration = (body.durations[0][1]/60).toFixed(0)
                     setLocInfo({duration: duration, distance: distance})
                 }
-                verifyAlarm()
             }
 
         }catch(e){

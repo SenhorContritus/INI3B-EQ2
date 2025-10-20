@@ -18,7 +18,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   const [nome, setNome] = useState("");
   const [ativo, setAtivo] = useState(true)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
-  const [diasSelecionadosStr, setDiasSelecionadosStr] = useState(["false,false,false,false,false,false,false"])
+  const [diasSelecionadosStr, setDiasSelecionadosStr] = useState("false,false,false,false,false,false,false")
   const [somAtivo, setSomAtivo] = useState(true);
   const [vibracaoAtiva, setVibracaoAtiva] = useState(true);
   const [adiarAtivo, setAdiarAtivo] = useState(true);
@@ -59,7 +59,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     const novosDias = [...diasSelecionados]; //spread operator para criar uma cópia do array
     novosDias[index] = !novosDias[index];
     const listaStr = novosDias.map(bool => bool.toString())
-    setDiasSelecionadosStr(listaStr)
+    setDiasSelecionadosStr(listaStr.toString())
     setDiasSelecionados(novosDias);
   }
   //é chamado quando nenhum alarme foi enviado por parâmetro 
@@ -90,6 +90,15 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     if(props.alarm && props.alarmProps != undefined){
       const alarme = props?.alarm
       const alarmProps = props?.alarmProps
+      const listaDiasStr = alarmProps.daysActive.split(",")
+      const listaDias = listaDiasStr.map((a: any) => {
+        if(a == "false"){
+          return false
+        }else{
+          return true
+        }
+      })
+      console.log(listaDias)
       setAlarme(props?.alarm)
       setNome(alarme.name)
       setAddress(alarme.address)
@@ -98,6 +107,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
       setSomAtivo(alarmProps.sound)
       setVibracaoAtiva(alarmProps.vibration)
       setAdiarAtivo(alarmProps.prostpone)
+      setDiasSelecionados(listaDias)
 
     }
 

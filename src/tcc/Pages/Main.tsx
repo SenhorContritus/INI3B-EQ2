@@ -81,7 +81,6 @@ export const Main = ({ route , navigation} : any) => {
 
   const verifyNewAlarm = () =>{
     const alarmRes = route.params?.alarm
-    const alarmProps = route.params?.alarmProps
     //Create
     if(alarmRes && route.params.edit == false ){
         console.log(alarmRes)
@@ -104,18 +103,19 @@ export const Main = ({ route , navigation} : any) => {
     //caso o parâmetro edit for true ele substitui o alarme selecionado pelo enviado pela tela configurarAlarme
     //Update
     if(alarmRes && route.params?.edit == true){
+      console.log(alarmRes)
       updateAlarmDB(alarmRes.id,alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
       updateAlarmPropsDB(
         alarmRes.id,
-        alarmProps.active, 
-        alarmProps.daysActive, 
-        alarmProps.sound,
-        alarmProps.soundUrl,
-        alarmProps.vibration,
-        alarmProps.vibrationType, 
-        alarmProps.prostpone, 
-        alarmProps.prostponeProps, 
-        alarmProps.volume
+        alarmRes.alarmProps.active, 
+        alarmRes.alarmProps.daysActive, 
+        alarmRes.alarmProps.sound,
+        alarmRes.alarmProps.soundUrl,
+        alarmRes.alarmProps.vibration,
+        alarmRes.alarmProps.vibrationType, 
+        alarmRes.alarmProps.prostpone, 
+        alarmRes.alarmProps.prostponeProps, 
+        alarmRes.alarmProps.volume
       )
       fetchAlarmDB() 
       fetchAllAlarmPropsDB()
