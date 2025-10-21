@@ -31,6 +31,11 @@ export default function CompAlarm(props: AlarmProp){
     useEffect(() => {
         console.log(dataProps.daysActive)
     },[])
+    const verifyAlarm = () => {
+        if(Number(locInfo?.distance) <= 0.2){
+            nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id, AlarmProps: dataProps})
+        }
+    }
     
     const calcDistMatrix = async () => {
         
@@ -49,7 +54,9 @@ export default function CompAlarm(props: AlarmProp){
                     const duration = (body.durations[0][1]/60).toFixed(0)
                     setLocInfo({duration: duration, distance: distance})
                 }
+                verifyAlarm()
             }
+
 
         }catch(e){
             return console.warn(e)
@@ -70,7 +77,7 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=17&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
             
             />
             

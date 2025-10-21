@@ -1,13 +1,19 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated, Button } from "react-native";
+import { StyleSheet, View, Text, Pressable, Image, Dimensions, Platform, StatusBar, Animated, Button, LogBox } from "react-native";
 import Alarm from "../Classes/Alarm";
 import _coords from "../types/_coords";
 import AlarmProps from "../Classes/AlarmProps";
+import {useAudioPlayer} from "expo-audio";
+
+LogBox.ignoreAllLogs()
+
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const w = (value: number) => (value / 440) * SCREEN_WIDTH;
 const h = (value: number) => (value / 957) * SCREEN_HEIGHT;
+
+
 
 function AnimatedButton({ style, onPress, children }: any) {
   const scale = useState(new Animated.Value(1))[0];
@@ -48,6 +54,9 @@ function AnimatedButton({ style, onPress, children }: any) {
 export default function Main({ navigation , route }: any) {
   const [time, setTime] = useState(new Date()); 
 
+  
+
+  
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -61,6 +70,14 @@ export default function Main({ navigation , route }: any) {
   const alarm = route.params.Alarm
   const id = route.params.Id
   const alarmProps = route.params.AlarmProps
+
+  const audioSource = require("../audio/tripleBaka.m4a")
+  const audio = useAudioPlayer(audioSource)
+  useEffect(() => {
+    audio.seekTo(0)
+    audio.play()
+  },[])
+
   return (
     <View style={styles.root}>
       {}
@@ -106,12 +123,12 @@ export default function Main({ navigation , route }: any) {
           style={[
             styles.title,
             {
-              fontSize: Math.max(w(15), 13),
+              fontSize: Math.max(w(20), 13),
               marginBottom: h(12),
             },
           ]}
         >
-          alarme
+          {alarm.name}
         </Text>
         <View
           style={[
@@ -125,6 +142,10 @@ export default function Main({ navigation , route }: any) {
             },
           ]}
         >
+          <Image 
+            style={styles.mapView}
+            src={`https://maps.googleapis.com/maps/api/staticmap?center=${alarm.latitude}, ${alarm.longitude}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${alarm.latitude}, ${alarm.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}          
+          />
         </View>
         <AnimatedButton
           style={[
@@ -138,17 +159,18 @@ export default function Main({ navigation , route }: any) {
             },
           ]}
           onPress={() =>{
+            audio.pause()
             navigation.popTo("Main", {
               alarm: new Alarm(
                 alarm.id, 
-                alarm.nome, 
-                {x: alarm.longitude.x ,y: alarm.latitude}, 
+                alarm.name, 
+                {x: alarm.latitude ,y: alarm.longitude}, 
                 alarm.address,
                 new AlarmProps( 
                   alarm.id, 
                   false, 
                   alarmProps.daysActive , 
-                  alarmProps.somAtivo, 
+                  alarmProps.sound, 
                   alarmProps.soundUrl, 
                   alarmProps.vibration, 
                   alarmProps.vibrationType,
@@ -228,4 +250,9 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     textAlign: "center",
   },
+  mapView: {
+    flex: 1,
+    flexDirection: "row",
+    borderRadius: 15
+  }
 });

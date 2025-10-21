@@ -2,11 +2,13 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     container:{
-        flex: 0.3,
+        flex: 1,
+        height: 130,
         flexDirection:"row",
         borderRadius: 20,
-        backgroundColor:"#010127",
-        padding: 10
+        backgroundColor:"#1E1F26",
+        padding: 10,
+        marginBottom: 10
     },
     mapView:{
         flex: 0.35,

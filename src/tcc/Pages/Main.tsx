@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Pressable} from "react-native";
+import { StyleSheet, View, Text, Pressable, ScrollView} from "react-native";
 import * as Location from "expo-location";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -298,7 +298,14 @@ export const Main = ({ route , navigation} : any) => {
         </View>
       </View>
       <View style={styles.alarmsContainer}>
-        {showAlarm()}
+        <ScrollView style={{
+          flex: 1,
+          borderRadius:10,
+          margin: 5
+        }}>
+          {showAlarm()}
+        </ScrollView>
+        
       </View>
       <View style={styles.buttonNewView}>
         <Pressable style={styles.buttonNewPress} onPress={() => navigation.navigate("ConfigurarAlarme",{alarm: undefined, listLenght: data.length + 1})}>
@@ -339,7 +346,7 @@ const styles = StyleSheet.create({
   fakeMap: {
     flex:0.74,
     width: "100%",
-    borderRadius: 10
+    borderRadius: 20
   },
   clockView: {
     flex: 0.38,
@@ -392,7 +399,7 @@ const styles = StyleSheet.create({
   },
   buttonNewPress:{
     flex: 0.20,
-    backgroundColor:"#010127",
+    backgroundColor:"#1E1F26",
     justifyContent: "center",
     alignItems: "center",
     height: "81%",
@@ -401,7 +408,7 @@ const styles = StyleSheet.create({
   buttonNewText:{
     flex: 1,
     fontFamily: "Lexend",
-    fontSize: 50,
+    fontSize: 45,
     fontWeight: "300",
     color: "#fff",
     textAlign: "center",
@@ -409,30 +416,3 @@ const styles = StyleSheet.create({
     height: "100%",
   }
 });
-/*codigo do app tsx caso de erro dnv
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import Main from "./Pages/Main";
-import ConfigPessoal from "./Pages/ConfigPessoal";
-import ConfigurarAlarme from "./Pages/ConfigurarAlarme";
-import TocarAlarme from "./Pages/TocarAlarme";
-
-
-const Stack = createNativeStackNavigator();
-
-
-export default function App(){
-  return <NavigationContainer>
-    
-    <Stack.Navigator screenOptions={{headerShown:false}}>
-      <Stack.Screen name="Main" component={Main}/>
-      <Stack.Screen name="ConfigPessoal" component={ConfigPessoal} />
-      <Stack.Screen name="ConfigurarAlarme" component={ConfigurarAlarme} />
-      <Stack.Screen name="TocarAlarme" component={TocarAlarme} />
-    </Stack.Navigator>
-  </NavigationContainer>
-};
-
-*/ 
