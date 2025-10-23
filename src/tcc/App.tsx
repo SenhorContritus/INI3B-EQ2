@@ -5,7 +5,6 @@ import {Main} from "./Pages/Main";
 import ConfigPessoal from "./Pages/ConfigPessoal";
 import TocarAlarme from "./Pages/TocarAlarme";
 import {ConfigurarAlarme} from "./Pages/ConfigurarAlarme";
-import Alarm from "./Classes/Alarm";
 import { LogBox } from "react-native";
 
 

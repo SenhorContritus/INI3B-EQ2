@@ -38,11 +38,12 @@ export default function CompAlarm(props: AlarmProp){
     }
     
     const calcDistMatrix = async () => {
-        
+        setTimeout(async () => {
         try{
             const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.longitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
             if(!response.ok){
-                throw new Error("[MATRIX FETCH]:" + response.json())
+                const res = await response.json()
+                throw new Error("[MATRIX FETCH]:" + JSON.stringify(res))
             }else{
                 const aa = await response.json()
                 const body = await aa
@@ -61,7 +62,9 @@ export default function CompAlarm(props: AlarmProp){
         }catch(e){
             return console.warn(e)
     ""    }
+    },1300)
     }
+    
     useEffect(() => {
         console.log(dataProps)
         console.log(props.data)

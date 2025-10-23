@@ -2,8 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Pressable, ScrollView} from "react-native";
 import * as Location from "expo-location";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
 import { useFonts } from 'expo-font';
 import MapView from "react-native-maps";
