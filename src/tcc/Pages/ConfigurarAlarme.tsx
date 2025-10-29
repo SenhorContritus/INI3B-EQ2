@@ -35,7 +35,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   const reverseGeocoding = async () => {
     try {
       console.log(coords)
-      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/reverse?longitude=${coords.y}&latitude=${coords.x}&access_token=${process.env.MAPBOX_APIKEY}`)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/reverse?longitude=${coords.y}&latitude=${coords.x}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
       if(!find.ok){
         throw new Error("[REVGEOCODE FETCH]:" + find.json() );
         
@@ -57,7 +57,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
 
   const findLocation = async () => {
     try {
-      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.MAPBOX_APIKEY}`)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
       if(!find.ok){
         throw new Error("[GEOCODE FETCH]:" + find.json() );
         

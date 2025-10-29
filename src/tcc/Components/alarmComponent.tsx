@@ -111,7 +111,7 @@ export default function CompAlarm(props: AlarmProp ){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=17&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.GOOGLE_APIKEY}`}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=17&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
             
             />
             

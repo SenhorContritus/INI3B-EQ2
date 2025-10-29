@@ -22,21 +22,11 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.GOOGLE_APIKEY"
+          "apiKey": "process.env.EXPO_PUBLIC_GOOGLE_APIKEY"
         }
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.eduardo153467.tcc",
-      "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
-      ]
+      "package": "com.eduardo153467.tcc"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -66,12 +56,6 @@
       ],
       "expo-background-task",
       "expo-audio"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/0e095b62-e014-4cfb-bae1-2130bdfbd3a1"
-    }
+    ]
   }
 }

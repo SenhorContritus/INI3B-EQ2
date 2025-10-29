@@ -145,7 +145,7 @@ export default function Main({ navigation , route }: any) {
         >
           <Image 
             style={styles.mapView}
-            src={`https://maps.googleapis.com/maps/api/staticmap?center=${alarm.latitude}, ${alarm.longitude}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${alarm.latitude}, ${alarm.longitude}&size:small&scale:1&key=${process.env.local.GOOGLE_APIKEY}`}          
+            src={`https://maps.googleapis.com/maps/api/staticmap?center=${alarm.latitude}, ${alarm.longitude}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${alarm.latitude}, ${alarm.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}          
           />
         </View>
         <AnimatedButton
