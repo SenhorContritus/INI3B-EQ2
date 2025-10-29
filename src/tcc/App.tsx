@@ -8,6 +8,7 @@ import {ConfigurarAlarme} from "./Pages/ConfigurarAlarme";
 import { LogBox } from "react-native";
 
 
+
 const Stack = createNativeStackNavigator();
 
 

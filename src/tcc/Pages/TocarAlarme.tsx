@@ -5,6 +5,8 @@ import Alarm from "../Classes/Alarm";
 import _coords from "../types/_coords";
 import AlarmProps from "../Classes/AlarmProps";
 import {useAudioPlayer} from "expo-audio";
+import useAlarm from "../Hooks/useAlarmTable";
+import useAlarmProps from "../Hooks/useAlarmPropsTable";
 
 LogBox.ignoreAllLogs()
 
@@ -53,9 +55,6 @@ function AnimatedButton({ style, onPress, children }: any) {
 
 export default function Main({ navigation , route }: any) {
   const [time, setTime] = useState(new Date()); 
-
-  
-
   
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -70,6 +69,8 @@ export default function Main({ navigation , route }: any) {
   const alarm = route.params.Alarm
   const id = route.params.Id
   const alarmProps = route.params.AlarmProps
+
+  
 
   const audioSource = require("../audio/tripleBaka.m4a")
   const audio = useAudioPlayer(audioSource)
@@ -144,7 +145,7 @@ export default function Main({ navigation , route }: any) {
         >
           <Image 
             style={styles.mapView}
-            src={`https://maps.googleapis.com/maps/api/staticmap?center=${alarm.latitude}, ${alarm.longitude}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${alarm.latitude}, ${alarm.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}          
+            src={`https://maps.googleapis.com/maps/api/staticmap?center=${alarm.latitude}, ${alarm.longitude}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${alarm.latitude}, ${alarm.longitude}&size:small&scale:1&key=${process.env.local.GOOGLE_APIKEY}`}          
           />
         </View>
         <AnimatedButton
@@ -160,28 +161,8 @@ export default function Main({ navigation , route }: any) {
           ]}
           onPress={() =>{
             audio.pause()
-            navigation.popTo("Main", {
-              alarm: new Alarm(
-                alarm.id, 
-                alarm.name, 
-                {x: alarm.latitude ,y: alarm.longitude}, 
-                alarm.address,
-                new AlarmProps( 
-                  alarm.id, 
-                  false, 
-                  alarmProps.daysActive , 
-                  alarmProps.sound, 
-                  alarmProps.soundUrl, 
-                  alarmProps.vibration, 
-                  alarmProps.vibrationType,
-                  alarmProps.prostponeProps,
-                  {times: 0, timeWait:0 }, 10 )
-              ),
-              edit:true
-              }
-            )
-          }
-}
+            navigation.popTo("Main")
+          }}
         >
           <Text style={[styles.offButtonText, { fontSize: Math.max(w(14), 13) }]}>
             Desligar

@@ -22,6 +22,7 @@ const useAlarmeProps = () => {
                 `CREATE TABLE IF NOT EXISTS alarm_props (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     active BOOLEAN NOT NULL,
+                    startRadius INTEGER NOT NULL,
                     daysActive VARCHAR NOT NULL,
                     sound BOOLEAN NOT NULL,
                     soundUrl VARCHAR,
@@ -58,6 +59,7 @@ const useAlarmeProps = () => {
 
     const insertAlarmPropsDB = async (
         active: boolean,
+        startRadius: number,
         daysActive: string,
         sound: boolean,
         soundUrl: string,
@@ -70,9 +72,9 @@ const useAlarmeProps = () => {
         try {
             await db.runAsync(
                 `INSERT INTO alarm_props (
-                     active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume
-                ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume]
+                     active,startRadius, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume
+                ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [active, startRadius, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume]
             );
             console.log('Propriedades do alarme inseridas com sucesso');
         } catch (error) {
@@ -82,6 +84,7 @@ const useAlarmeProps = () => {
     const updateAlarmPropsDB = async(
         alarm_id: number,
         active: boolean,
+        startRadius: number,
         daysActive: string,
         sound: boolean,
         soundUrl: string,
@@ -93,10 +96,10 @@ const useAlarmeProps = () => {
     ) => {
         try{
             await db.runAsync(`
-                UPDATE alarm_props SET (active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume) =
-                                        (?,?,?,?,?,?,?,?,?)
+                UPDATE alarm_props SET (active, startRadius, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume) =
+                                        (?,?,?,?,?,?,?,?,?,?)
                                     Where id = ?
-            `,[active, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume,alarm_id])
+            `,[active, startRadius, daysActive, sound, soundUrl, vibration, vibrationType, prostpone, prostponeProps, volume,alarm_id])
             console.log("[ALARM_PROPS]:Tabela atualizada com sucesso")
 
         }catch (error){

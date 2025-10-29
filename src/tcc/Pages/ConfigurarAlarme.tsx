@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Switch, Pressable, Image, LogBox } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { View, Text, StyleSheet, TextInput, Switch, Pressable, Image, LogBox, ScrollView } from "react-native";
+import MapView, { Circle, Marker } from "react-native-maps";
+import Slider from "@react-native-community/slider"
 import Alarm from "../Classes/Alarm";
 import * as SQLite from "expo-sqlite"
 import AlarmProps from "../Classes/AlarmProps";
@@ -15,11 +15,13 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
 
   useEffect(() => {
       LogBox.ignoreAllLogs()
-    },[])
+  },[])
+
   const props = route.params
   const [Alarme, setAlarme] = useState<any>();  
   const [nome, setNome] = useState("");
   const [ativo, setAtivo] = useState(true)
+  const [startRadius, setStartRadius] = useState(200)
   const [diasSelecionados, setDiasSelecionados] = useState([false, false, false, false, false, false, false]);
   const [diasSelecionadosStr, setDiasSelecionadosStr] = useState("false,false,false,false,false,false,false")
   const [somAtivo, setSomAtivo] = useState(true);
@@ -29,12 +31,33 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
   const [coords, setCoords] = useState<_coords>({x:0 , y:0})
   const [address, setAddress] = useState("")
   
-  // Exemplo de data fixa
-  const data = "13 de fevereiro de 2025";
+
+  const reverseGeocoding = async () => {
+    try {
+      console.log(coords)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/reverse?longitude=${coords.y}&latitude=${coords.x}&access_token=${process.env.MAPBOX_APIKEY}`)
+      if(!find.ok){
+        throw new Error("[REVGEOCODE FETCH]:" + find.json() );
+        
+      }else{
+        const response = await find.json()
+        if(response != ''){
+          const endereco = response.features[0].properties.name
+          console.log(endereco)
+          return setAddress(endereco)
+        }
+        else{
+         throw new Error("[REVGEOCODE RESPONSE]:EMPTY RESPONSE");
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const findLocation = async () => {
     try {
-      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
+      const find = await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${address}&access_token=${process.env.MAPBOX_APIKEY}`)
       if(!find.ok){
         throw new Error("[GEOCODE FETCH]:" + find.json() );
         
@@ -75,7 +98,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     if(nomeIf === ""){
       nomeIf = "Alarm " + id
     }
-    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, ativo,diasSelecionadosStr, somAtivo, soundUrl,vibracaoAtiva,"a ",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
+    return navigation.popTo("Main", {alarm: new Alarm(id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps( id, ativo, startRadius, diasSelecionadosStr, somAtivo, soundUrl,vibracaoAtiva,"a ",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit:false})
   }
   // é chamado quando a tela main manda um alarme como parametro
   const saveAlarm = () => {
@@ -86,7 +109,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
       if(nomeIf === ""){
         nomeIf = "Alarm " + Alarme?.id
       }
-      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps(Alarme?.id, ativo,diasSelecionadosStr,somAtivo, soundUrl,vibracaoAtiva,"a",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
+      return navigation.popTo("Main", {alarm: new Alarm(Alarme?.id, nomeIf, {x: coords.x ,y: coords.y}, address,new AlarmProps(Alarme?.id, ativo, startRadius, diasSelecionadosStr,somAtivo, soundUrl,vibracaoAtiva,"a",adiarAtivo,{times: 0, timeWait:0 }, 10 )), edit: true})
     }
   }
   //verifica se foi passado algum alarme como parâmetro e caso o tenha, modifica os valores apresentados
@@ -108,6 +131,7 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
       setAddress(alarme.address)
       setCoords({x: alarme.latitude, y: alarme.longitude})
       console.log(alarmProps)
+      setStartRadius(alarmProps.startRadius)
       setSomAtivo(alarmProps.sound)
       setVibracaoAtiva(alarmProps.vibration)
       setAdiarAtivo(alarmProps.prostpone)
@@ -121,111 +145,195 @@ export const ConfigurarAlarme = ({route, navigation} : any) => {
     <View style={styles.body}>
       {/* Mapa */}
       <View style={styles.map}>
-        <Image 
-          style={styles.mapView}
-          src={`https://maps.googleapis.com/maps/api/staticmap?center=${coords.x}, ${coords.y}&zoom=16&size=300x400&maptype=roadmap&markers=color:red%7Clabel:.%7C${coords.x}, ${coords.y}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}          
-        />
+        <MapView 
+            onPress={(value)=>{
+              const{coordinate} = value.nativeEvent
+              setCoords({
+                x:coordinate.latitude,
+                y:coordinate.longitude
+              })
+              reverseGeocoding()
+            }}
+            style={styles.mapView}
+            region={{
+              latitude: coords.x,
+              longitude: coords.y,
+              latitudeDelta: 0.09,
+              longitudeDelta: 0.09
+            }}
+            
+            camera={{
+              center:{
+                latitude: coords.x,
+                longitude: coords.y
+              },
+              zoom: 16,
+              heading: 0,
+              altitude: 1000,
+              pitch: 0
+              
+            }}
+            
+            showsCompass={false}
+            showsUserLocation={false}
+            followsUserLocation={true}
+            showsBuildings={false}
+            zoomControlEnabled={false}
+            zoomEnabled={true}
+            showsMyLocationButton={false}
+            mapType={"standard"}
+            scrollEnabled={true}
+            
+          >
+            <Marker 
+              coordinate={{
+                latitude: coords.x,
+                longitude: coords.y
+              }}
+              pinColor="red"
+              
+            />
+            <Circle 
+              center={{
+                latitude: coords.x,
+                longitude: coords.y
+              }} 
+              radius={startRadius}
+              fillColor="rgba(57, 112, 223, 0.4)"
+              strokeColor="rgba(57, 112, 223, 0.6)"
+              
+            />
+          </MapView>
       </View>
 
-      {/* Card de configuração */}
+      
       <View style={styles.card}>
-        {/* Data e ícone *//*}
-        <View style={styles.dataRow}>
-          <Text style={styles.dataText}>{data}</Text>
-          <Text style={styles.dataIcon}>📅</Text>
-        </View>
+        <ScrollView
+          style={
+            {
+              padding: 16
+            }
+          }
+        >
+          {/* Dias da semana */}
+          <View style={styles.diasRow}>
+            {dias.map((dia, idx) => (
+              <Pressable
+                key={dia + idx}
+                style={[
+                  styles.dia,
+                  diasSelecionados[idx] && styles.diaSelecionado,
+                ]}
+                onPress={() => toggleDia(idx)}
+              >
+                <Text style={styles.diaText}>{dia}</Text>
+              </Pressable>
+            ))}
+          </View>
+          
+          <View style={styles.itemRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="nome do alarme"
+              placeholderTextColor="#ccc"
+              value={nome}
+              onChangeText={setNome}
+            />
+          </View>
+          <View style={styles.itemRow}>
+            <TextInput
+              style={styles.input}
+              placeholder="endereço"
+              placeholderTextColor="#ccc"
+              value={address}
+              onChangeText={setAddress}
+              onSubmitEditing={findLocation}
+            />
+          </View>
+          <View style={styles.itemRow}>
+            <View style={styles.sliderView}>
+              <Text
+                style={styles.itemTitle}
+              >
+                {`Raio de Disparo: ${startRadius}m`}
+              </Text>
+              <Slider
+                style={ styles.sliderStartRadius}
+                value={startRadius}
+                minimumValue={50}
+                maximumValue={1000}
+                thumbTintColor="#fff"
+                minimumTrackTintColor="#fff"
+                maximumTrackTintColor="#fff"
+                step={50}
+                onValueChange={(value) => {
+                  setStartRadius(value)
+                }}
+              />
+            </View>
+          </View>
+            
 
-        {/* Dias da semana */}
-        <View style={styles.diasRow}>
-          {dias.map((dia, idx) => (
-            <Pressable
-              key={dia + idx}
-              style={[
-                styles.dia,
-                diasSelecionados[idx] && styles.diaSelecionado,
-              ]}
-              onPress={() => toggleDia(idx)}
+          {/* Som do alarme */}
+          <View style={styles.itemRow}>
+
+            <View>
+              <Text style={styles.itemTitle}>Som do alarme</Text>
+              <Text style={styles.itemSubtitle}>Triple Baka - Hatsune Miku Feat Teto x Neru</Text>
+            </View>
+            <Switch 
+            value={Boolean(somAtivo)} 
+            onValueChange={setSomAtivo}
+            thumbColor={'#1E1F26'}
+            trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
+            />
+          </View>
+
+          {/* Padrão de vibração */}
+          <View style={styles.itemRow}>
+            <View>
+              <Text style={styles.itemTitle}>Padrão de vibração</Text>
+              <Text style={styles.itemSubtitle}>tu tu tu</Text>
+            </View>
+            <Switch 
+            value={Boolean(vibracaoAtiva)} 
+            onValueChange={setVibracaoAtiva} 
+            thumbColor={'#1E1F26'}
+            trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
+            />
+          </View>
+
+          {/* Adiar */}
+          <View style={styles.itemRow}>
+            <View>
+              <Text style={styles.itemTitle}>Adiar</Text>
+              <Text style={styles.itemSubtitle}>1 minuto, infinitas vezes</Text>
+            </View>
+            <Switch 
+            value={Boolean(adiarAtivo)} 
+            onValueChange={setAdiarAtivo} 
+            thumbColor={'#1E1F26'}
+            trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
+            />
+          </View>
+          </ScrollView>
+          {/* Botões */}
+          </View>
+          <View style={styles.botoesRow}>
+            <Pressable 
+              style={styles.btBottomPress} 
+              onPress={() => navigation.goBack()}
             >
-              <Text style={styles.diaText}>{dia}</Text>
+              <Text style={styles.cancelar}>   Cancelar</Text>
             </Pressable>
-          ))}
-        </View>
-
-        {/* Nome do alarme */}
-        <TextInput
-          style={styles.input}
-          placeholder="nome do alarme"
-          placeholderTextColor="#ccc"
-          value={nome}
-          onChangeText={setNome}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="endereço"
-          placeholderTextColor="#ccc"
-          value={address}
-          onChangeText={setAddress}
-          onSubmitEditing={findLocation}
-        />
-
-        {/* Som do alarme */}
-        <View style={styles.itemRow}>
-          <View>
-            <Text style={styles.itemTitle}>Som do alarme</Text>
-            <Text style={styles.itemSubtitle}>Triple Baka - Hatsune Miku Feat Teto x Neru</Text>
-          </View>
-          <Switch 
-          value={Boolean(somAtivo)} 
-          onValueChange={setSomAtivo}
-          thumbColor={'#1E1F26'}
-          trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
-          />
-        </View>
-
-        {/* Padrão de vibração */}
-        <View style={styles.itemRow}>
-          <View>
-            <Text style={styles.itemTitle}>Padrão de vibração</Text>
-            <Text style={styles.itemSubtitle}>tu tu tu</Text>
-          </View>
-          <Switch 
-          value={Boolean(vibracaoAtiva)} 
-          onValueChange={setVibracaoAtiva} 
-          thumbColor={'#1E1F26'}
-          trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
-          />
-        </View>
-
-        {/* Adiar */}
-        <View style={styles.itemRow}>
-          <View>
-            <Text style={styles.itemTitle}>Adiar</Text>
-            <Text style={styles.itemSubtitle}>1 minuto, infinitas vezes</Text>
-          </View>
-          <Switch 
-          value={Boolean(adiarAtivo)} 
-          onValueChange={setAdiarAtivo} 
-          thumbColor={'#1E1F26'}
-          trackColor={{false:'#FFFFFF' , true: '#FFFFFF'}} 
-          />
-        </View>
-
-        {/* Botões */}
-        </View>
-        <View style={styles.botoesRow}>
-          <Pressable 
-            style={styles.btBottomPress} 
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.cancelar}>   Cancelar</Text>
-          </Pressable>
-          <Pressable style={styles.btBottomPress} 
-          onPress={Alarme != undefined ? saveAlarm : createAlarm}
-          >
-            <Text style={styles.salvar}>Salvar </Text>
-          </Pressable>
+            <Pressable style={styles.btBottomPress} 
+            onPress={Alarme != undefined ? saveAlarm : createAlarm}
+            >
+              <Text style={styles.salvar}>Salvar </Text>
+            </Pressable>
       </View>
+      
+
     </View>
   );
 }
@@ -248,7 +356,8 @@ const styles = StyleSheet.create({
     flex: 0.6,
     backgroundColor: "#1E1F26",
     borderRadius: 18,
-    padding: 18,
+    padding: 5,
+    paddingVertical: 10,
     width: "100%",
     alignSelf: "center",
 
@@ -295,16 +404,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   input: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#b6b6b6ff",
     color: "#fff",
     fontSize: 20,
-    marginBottom: 20,
     marginTop: 6,
-    paddingVertical: 4,
     fontWeight: "400",
     letterSpacing: 1,
     borderRadius: 6
+  },
+  sliderStartRadius:{
+    width: "100%",
+    height: 40,
+    textAlign: "center"
+  },
+  sliderView : {
+    flex: 1,
+    flexDirection: "column",
+    paddingVertical: 10,
   },
   itemRow: {
     flexDirection: "row",

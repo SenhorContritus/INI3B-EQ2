@@ -16,13 +16,15 @@ type AlarmProp = {
     handleDeletePress: any,
     handleEditPress:any,
     handleActivePress: any,
-    navigation: any
+    navigation: any,
+    alarmHook: any,
+    propsHook: any
 }
 
 
 
 
-export default function CompAlarm(props: AlarmProp){
+export default function CompAlarm(props: AlarmProp ){
 
     const nav = props.navigation
     const dataProps = props.dataProps
@@ -31,11 +33,40 @@ export default function CompAlarm(props: AlarmProp){
     useEffect(() => {
         console.log(dataProps.daysActive)
     },[])
+
+    const disableAlarm = (alarm: any, alarmProps:any) =>{
+        if(alarmProps && alarm){
+          props.alarmHook(
+            alarm.id,
+            alarm.name,
+            alarm.latitude,
+            alarm.longitude,
+            alarm.address
+          )
+          props.propsHook(
+            alarm.id,
+            false,
+            alarmProps.startRadius,
+            alarmProps.daysActive,
+            alarmProps.sound,
+            alarmProps.soundUrl,
+            alarmProps.vibration,
+            alarmProps.vibrationType,
+            alarmProps.prostpone,
+            alarmProps.prostponeProps, 
+            alarmProps.volume,
+          )
+        }
+      
+      }
+
     const verifyAlarm = () => {
-        if(Number(locInfo?.distance) <= 0.2){
+        if(Number(locInfo?.distance) <= (dataProps.startRadius/1000)){
+            disableAlarm(props.data, dataProps)
             nav.navigate("TocarAlarme", {Alarm: props.data, Id: props.id, AlarmProps: dataProps})
         }
     }
+    
     
     const calcDistMatrix = async () => {
         setTimeout(async () => {
@@ -61,8 +92,8 @@ export default function CompAlarm(props: AlarmProp){
 
         }catch(e){
             return console.warn(e)
-    ""    }
-    },1300)
+    }
+    },2500)
     }
     
     useEffect(() => {
@@ -80,7 +111,7 @@ export default function CompAlarm(props: AlarmProp){
         <View style={styles.container}>
             <Image 
                 style={styles.mapView}
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=17&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.EXPO_PUBLIC_GOOGLE_APIKEY}`}
+                src={`https://maps.googleapis.com/maps/api/staticmap?center=${props.data.latitude}, ${props.data.longitude}&zoom=17&size=200x200&maptype=roadmap&markers=color:red%7Clabel:.%7C${props.data.latitude}, ${props.data.longitude}&size:small&scale:1&key=${process.env.GOOGLE_APIKEY}`}
             
             />
             

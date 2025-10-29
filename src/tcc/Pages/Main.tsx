@@ -85,6 +85,7 @@ export const Main = ({ route , navigation} : any) => {
         insertAlarmDB(alarmRes.name, alarmRes.coords.x, alarmRes.coords.y, alarmRes.address)
         insertAlarmPropsDB(
           alarmRes.alarmProps.active, 
+          alarmRes.alarmProps.startRadius,
           alarmRes.alarmProps.daysActive, 
           alarmRes.alarmProps.sound,
           alarmRes.alarmProps.soundUrl,
@@ -106,6 +107,7 @@ export const Main = ({ route , navigation} : any) => {
       updateAlarmPropsDB(
         alarmRes.id,
         alarmRes.alarmProps.active, 
+        alarmRes.alarmProps.startRadius,
         alarmRes.alarmProps.daysActive, 
         alarmRes.alarmProps.sound,
         alarmRes.alarmProps.soundUrl,
@@ -192,6 +194,7 @@ export const Main = ({ route , navigation} : any) => {
       updateAlarmPropsDB(
         alarm.id,
         active,
+        alarmProps.startRadius,
         alarmProps.daysActive,
         alarmProps.sound,
         alarmProps.soundUrl,
@@ -202,6 +205,7 @@ export const Main = ({ route , navigation} : any) => {
         alarmProps.volume,
       )
     }
+  
   }
 
   //Vai pra tela de modificação e passa o alarme como parâmetro
@@ -235,6 +239,8 @@ export const Main = ({ route , navigation} : any) => {
           handleActivePress={activeAlarm} 
           navigation={navigation} 
           location={location}
+          alarmHook={updateAlarmDB}
+          propsHook={updateAlarmPropsDB}
         />
       
       )
