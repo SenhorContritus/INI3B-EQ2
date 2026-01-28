@@ -234,6 +234,7 @@ export const Main = ({ route , navigation} : any) => {
           dataProps={allDataProps.filter(b => b.id == a.id)[0]}
           x={location?.coords.latitude} 
           y={location?.coords.longitude} 
+          speed= {location?.coords.speed}
           handleDeletePress={deleteAlarm} 
           handleEditPress={modifyAlarm} 
           handleActivePress={activeAlarm} 

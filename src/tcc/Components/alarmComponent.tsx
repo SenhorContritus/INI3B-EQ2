@@ -12,6 +12,7 @@ type AlarmProp = {
     dataProps: any,
     x: number,
     y: number,
+    speed: any,
     location: any,
     handleDeletePress: any,
     handleEditPress:any,
@@ -20,7 +21,6 @@ type AlarmProp = {
     alarmHook: any,
     propsHook: any
 }
-
 
 
 
@@ -67,34 +67,29 @@ export default function CompAlarm(props: AlarmProp ){
         }
     }
     
-    
-    const calcDistMatrix = async () => {
-        setTimeout(async () => {
-        try{
-            const response = await fetch(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${props.y},${props.x};${props.data.longitude},${props.data.latitude}?annotations=duration%2Cdistance&access_token=${process.env.EXPO_PUBLIC_MAPBOX_APIKEY}`)
-            if(!response.ok){
-                const res = await response.json()
-                throw new Error("[MATRIX FETCH]:" + JSON.stringify(res))
-            }else{
-                const aa = await response.json()
-                const body = await aa
-                if(body == " "){
-                    throw new Error("[MATRIX RESPONSE]: EMPTY RESPONSE")
-                }
-                else{
-                    const distance = (body.distances[0][1]/1000).toFixed(1)
-                    const duration = (body.durations[0][1]/60).toFixed(0)
-                    setLocInfo({duration: duration, distance: distance})
-                }
-                verifyAlarm()
+    const calcDistanceTP = () => {
+        const {sin , sqrt, cos, atan2, PI} = Math
+        setTimeout( () => {
+            const coordsRad = {
+                x1: props.x * PI / 180,
+                y1: props.y * PI / 180, 
+                x2: props.data.latitude * PI / 180, 
+                y2: props.data.longitude * PI / 180
             }
+            const R = 6371
+            const distX = coordsRad.x1 - coordsRad.x2
+            const distY = coordsRad.y1 - coordsRad.y2
+            const a = sin(distX/2) * sin(distX/2) 
+                    + cos(coordsRad.x1) * cos(coordsRad.x2) 
+                    * sin(distY/2) * sin(distY/2)
+            const c = 2* atan2(sqrt(a), sqrt(1 - a))
+            const distance = R * c
+            setLocInfo({distance : distance.toFixed(2) , duration : props.speed })
+            return verifyAlarm()
+        }, 500);
 
-
-        }catch(e){
-            return console.warn(e)
     }
-    },2500)
-    }
+    
     
     useEffect(() => {
         console.log(dataProps)
@@ -103,7 +98,7 @@ export default function CompAlarm(props: AlarmProp ){
 
     useEffect(()=>{
             if(dataProps.active){
-                calcDistMatrix()
+                calcDistanceTP()
             }
         
     },[props.x])
